@@ -50,7 +50,7 @@ function handleComplete() {
 		$('#image-field').prepend(queue.getResult('hana.base'));
 		var timer = new Date();
 		Caman('#canvas', 'img/hana/color.png', function () {
-			this.translate([255, 255, 224], [155, 255, 224]);
+			this.translate([255, 255, 224], [65, 48, 122]);
 			this.render(function () {
 				console.log('Rendering Time: ' + (new Date() - timer));
 				$('#image-field').removeClass('invisible');
