@@ -1,3 +1,12 @@
+.user-select(@style) {
+	-webkit-touch-callout: @style;
+	-webkit-user-select: @style;
+	-khtml-user-select: @style;
+	-moz-user-select: @style;
+	-ms-user-select: @style;
+	user-select: @style;
+}
+
 html {
 	background-color: #f5f5f5;
 	font-family: 'Lato', sans-serif;
@@ -18,18 +27,9 @@ h1 {
 	width: 400px;
 	height: 400px;
 	position: relative;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
+	.user-select(none);
 
-#image-field img {
-	position: absolute;
-}
-
-#image-field canvas {
-	position: absolute;
+	img, canvas {
+		position: absolute;
+	}
 }

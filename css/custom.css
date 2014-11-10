@@ -22,9 +22,7 @@ h1 {
   -ms-user-select: none;
   user-select: none;
 }
-#image-field img {
-  position: absolute;
-}
+#image-field img,
 #image-field canvas {
   position: absolute;
 }
