@@ -50,3 +50,6 @@ Temporary Items
 
 # KDE directory preferences
 .directory
+
+# node.js
+node_modules
