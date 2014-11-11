@@ -21,11 +21,15 @@ html {
   font-family: 'Lato', sans-serif;
 }
 h1 {
-  height: 70px;
-  margin: 40px 0;
   font-weight: 900;
   font-size: 48px;
   text-align: center;
+}
+@media screen and (min-width: 901px) {
+  h1 {
+    height: 70px;
+    margin: 40px 0;
+  }
 }
 #container {
   width: 96%;
@@ -45,14 +49,14 @@ h1 {
   }
 }
 @media screen and (min-width: 901px) {
-  #image-panel {
+  .panel {
     width: 50%;
     height: 100%;
     float: left;
   }
 }
 @media screen and (max-width: 900px) {
-  #image-panel {
+  .panel {
     float: none;
     width: auto;
   }
@@ -83,4 +87,7 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
+}
+#color-panel {
+  background-color: gray;
 }

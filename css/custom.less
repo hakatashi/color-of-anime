@@ -34,8 +34,11 @@ html {
 }
 
 h1 {
-	height: 70px;
-	margin: 40px 0;
+	@media screen and (min-width: 901px) {
+		height: 70px;
+		margin: 40px 0;
+	}
+
 	font-weight: 900;
 	font-size: 48px;
 	text-align: center;
@@ -57,7 +60,7 @@ h1 {
 	margin: 0 auto;
 }
 
-#image-panel {
+.panel {
 	@media screen and (min-width: 901px) {
 		width: 50%;
 		height: 100%;
@@ -68,7 +71,9 @@ h1 {
 		float: none;
 		width: auto;
 	}
+}
 
+#image-panel {
 	#image-field {
 		margin: 0 5%;
 		width: 90%;
@@ -90,4 +95,8 @@ h1 {
 			left: 0;
 		}
 	}
+}
+
+#color-panel {
+	background-color: gray;
 }
