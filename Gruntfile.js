@@ -16,11 +16,19 @@ module.exports = function (grunt) {
 				src: ['css/normalize.css', 'css/main.css', 'css/custom.css'],
 				dest: 'css/style.css'
 			}
+		},
+		jade: {
+			html: {
+				files: {
+					'index.html': 'index.jade'
+				}
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 
-	grunt.registerTask('default', ['less', 'concat']);
+	grunt.registerTask('default', ['less', 'concat', 'jade']);
 };
