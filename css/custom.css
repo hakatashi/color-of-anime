@@ -9,12 +9,17 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #c0c0c0 /* show me! */;
 }
 .square:before {
   content: "";
   display: block;
   margin-top: 100%;
+}
+.bare {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 html {
   background-color: #f5f5f5;
@@ -88,6 +93,38 @@ h1 {
   top: 0;
   left: 0;
 }
-#color-panel {
-  background-color: gray;
+#color-panel #color-field {
+  margin: 5%;
+}
+@media screen and (min-width: 901px) {
+  #color-panel #color-field {
+    height: 90%;
+  }
+}
+#color-panel #color-field #color-tabs {
+  height: 50px;
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+#color-panel #color-field #color-tabs .tab {
+  height: auto;
+  width: 100px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  float: left;
+  padding: 5px 5px 0;
+}
+#color-panel #color-field #color-tabs .tab .tab-inner {
+  height: 100%;
+  width: auto;
+  background-color: Orchid;
+  border-radius: 10px 10px 0 0;
+  color: white;
+  text-align: center;
+  font-size: 30px;
 }

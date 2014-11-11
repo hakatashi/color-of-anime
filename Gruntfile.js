@@ -23,12 +23,23 @@ module.exports = function (grunt) {
 					'index.html': 'index.jade'
 				}
 			}
+		},
+		watch: {
+			options: {
+				livereload: true
+			},
+			css: {
+				files: ['**/*.less', '**/*.jade'],
+				tasks: ['compile']
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('default', ['less', 'concat', 'jade']);
+	grunt.registerTask('default', ['compile', 'watch']);
+	grunt.registerTask('compile', ['less', 'concat', 'jade']);
 };

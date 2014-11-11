@@ -8,7 +8,6 @@ block head
 	script(src='//code.createjs.com/preloadjs-0.4.1.min.js')
 	script(src='//cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js')
 
-
 block body
 	h1 Animecolors Test
 	#container.clearfix
@@ -16,3 +15,22 @@ block body
 			#image-field.invisible.clearfix
 				canvas#canvas(width='400', height='400')
 		#color-panel.clearfix.panel
+			#color-field
+				ul#color-tabs.tabs.clearfix
+					li.tab
+						.tab-inner RGB
+					li.tab
+						.tab-inner HSV
+					li.tab
+						.tab-inner Lab
+				#color-sliders
+					#RGB-slider.color-slider
+						.color-parameter-wrap
+							label(for='RGB-R-parameter') R
+							div#RGB-R-parameter.color-parameter
+						.color-parameter-wrap
+							label(for='RGB-G-parameter') G
+							div#RGB-G-parameter.color-parameter
+						.color-parameter-wrap
+							label(for='RGB-B-parameter') B
+							div#RGB-B-parameter.color-parameter
