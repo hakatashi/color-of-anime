@@ -835,7 +835,7 @@ textarea {
   list-style-type: none;
 }
 html {
-  background-color: #f5f5f5;
+  background-color: white;
   font-family: 'Lato', sans-serif;
 }
 h1 {
@@ -907,6 +907,7 @@ h1 {
   left: 0;
 }
 #color-panel #color-field {
+  position: relative;
   margin: 5%;
 }
 @media screen and (min-width: 901px) {
@@ -915,29 +916,51 @@ h1 {
   }
 }
 #color-panel #color-field #color-tabs {
+  position: absolute;
+  top: 0;
   height: 50px;
-  width: 100%;
+  left: 30px;
+  right: 0;
   display: block;
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 #color-panel #color-field #color-tabs .tab {
-  height: auto;
+  height: 100%;
   width: 100px;
   display: block;
   margin: 0;
   padding: 0;
   list-style-type: none;
   float: left;
-  padding: 5px 5px 0;
+  padding: 0 10px;
 }
 #color-panel #color-field #color-tabs .tab .tab-inner {
-  height: 100%;
+  height: 45px;
   width: auto;
-  background-color: Orchid;
+  padding-top: 5px;
+  background-color: SlateBlue;
   border-radius: 10px 10px 0 0;
   color: white;
   text-align: center;
-  font-size: 30px;
+  font-size: 26px;
+  font-weight: bold;
+}
+#color-panel #color-field #color-sliders {
+  width: 100%;
+  height: 100%;
+}
+#color-panel #color-field .color-slider {
+  display: none;
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #E0F3FF;
+  border-radius: 20px;
+}
+#color-panel #color-field #RGB-slider {
+  display: block;
 }

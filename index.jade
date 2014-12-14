@@ -24,13 +24,9 @@ block body
 					li.tab
 						.tab-inner Lab
 				#color-sliders
-					#RGB-slider.color-slider
-						.color-parameter-wrap
-							label(for='RGB-R-parameter') R
-							div#RGB-R-parameter.color-parameter
-						.color-parameter-wrap
-							label(for='RGB-G-parameter') G
-							div#RGB-G-parameter.color-parameter
-						.color-parameter-wrap
-							label(for='RGB-B-parameter') B
-							div#RGB-B-parameter.color-parameter
+					.color-slider#RGB-slider
+						each parameter in ['R', 'G', 'B']
+							.color-parameter-wrap
+								label(for='RGB-'+parameter+'-parameter')= parameter
+								.color-parameter(id='RGB-'+parameter+'-parameter')
+								.color-value 255
