@@ -12,10 +12,10 @@ characters.forEach(function (character) {
 	manifest.push({
 		id: character + '.base',
 		src: 'img/' + character + '/base.png',
-	},{
+	}, {
 		id: character + '.color',
 		src: 'img/' + character + '/color.png',
-	})
+	});
 });
 
 queue.on('complete', handleComplete, this);
@@ -56,5 +56,34 @@ function handleComplete() {
 				$('#image-field').removeClass('invisible');
 			});
 		});
+
+		// enable pinches
+		$('.color-slider-pinch').bind({
+			'touchstart mousedown': function (event) {
+
+				event.preventDefault();
+
+				var isTouch = Boolean(event.originalEvent.changedTouches);
+
+				this.touchX = (isTouch ? event.originalEvent.changedTouches[0].pageX : event.originalEvent.pageX);
+				this.touchLeft = $(this).position().left;
+				this.touched = true;
+			},
+			'touchmove mousemove': function (event) {
+				if (!this.touched) return;
+
+				event.preventDefault();
+
+				var isTouch = Boolean(event.originalEvent.changedTouches);
+				var X = (isTouch ? event.originalEvent.changedTouches[0].pageX : event.originalEvent.pageX);
+
+				$(this).css({
+					left: this.touchLeft - this.touchX + X
+				});
+			},
+			'touchend mouseup': function (event) {
+				this.touched = false;
+			}
+		})
 	});
 }
