@@ -911,36 +911,36 @@ h1 {
   top: 0;
   left: 0;
 }
-#color-panel .tab-inner {
+.tab-inner {
   background-color: SlateBlue;
   color: white;
   text-align: center;
   font-weight: bold;
 }
-#color-panel #color-sliders {
+#color-sliders {
   background-color: #4D4D4D;
   border-radius: 20px;
   *zoom: 1;
 }
-#color-panel #color-sliders:before,
-#color-panel #color-sliders:after {
+#color-sliders:before,
+#color-sliders:after {
   content: " ";
   display: table;
 }
-#color-panel #color-sliders:after {
+#color-sliders:after {
   clear: both;
 }
-#color-panel .color-slider {
+.color-slider {
   display: none;
   margin: 10px;
 }
-#color-panel #RGB-slider {
+#RGB-slider {
   display: block;
 }
-#color-panel #color-field {
+#color-field {
   margin: 5%;
 }
-#color-panel #color-field #color-tabs {
+#color-tabs {
   display: block;
   margin: 0;
   padding: 0;
@@ -949,12 +949,12 @@ h1 {
   height: 50px;
   margin: 0 auto;
 }
-#color-panel #color-field #color-tabs .tab {
+.tab {
   height: 100%;
   width: 33.33333333%;
   float: left;
 }
-#color-panel #color-field #color-tabs .tab .tab-inner {
+.tab-inner {
   margin: 0 5px;
   height: 50px;
   width: auto;
@@ -962,12 +962,12 @@ h1 {
   font-size: 20px;
   line-height: 50px;
 }
-#color-panel #color-field .color-parameter-wrap {
+.color-parameter-wrap {
   width: 100%;
   height: 50px;
   position: relative;
 }
-#color-panel #color-field .color-parameter-wrap .color-parameter-label {
+.color-parameter-label {
   display: block;
   width: 40px;
   height: 100%;
@@ -979,16 +979,16 @@ h1 {
   line-height: 50px;
   text-align: center;
 }
-#color-panel #color-field .color-parameter-wrap #RGB-R-label {
+#RGB-R-label {
   color: #F09E9E;
 }
-#color-panel #color-field .color-parameter-wrap #RGB-G-label {
+#RGB-G-label {
   color: #7DF791;
 }
-#color-panel #color-field .color-parameter-wrap #RGB-B-label {
+#RGB-B-label {
   color: #AFE5F9;
 }
-#color-panel #color-field .color-parameter-wrap .color-parameter {
+.color-parameter {
   display: block;
   height: 100%;
   position: absolute;
@@ -996,7 +996,7 @@ h1 {
   left: 40px;
   right: 55px;
 }
-#color-panel #color-field .color-parameter-wrap .color-parameter .color-slider-wrapper {
+.color-slider-wrapper {
   width: 100%;
   height: 8px;
   position: relative;
@@ -1008,7 +1008,7 @@ h1 {
   border-color: white;
   background-color: white;
 }
-#color-panel #color-field .color-parameter-wrap .color-parameter .color-slider-wrapper .color-slider-pinch {
+.color-slider-pinch {
   width: 10px;
   height: 30px;
   position: relative;
@@ -1018,7 +1018,7 @@ h1 {
   background-color: white;
   border: solid 2px #111;
 }
-#color-panel #color-field .color-parameter-wrap .color-value {
+.color-value {
   display: block;
   width: 55px;
   height: 100%;
@@ -1032,11 +1032,11 @@ h1 {
   color: white;
 }
 @media screen and (min-width: 900px) {
-  #color-panel #color-field {
+  #color-field {
     position: relative;
     height: 90%;
   }
-  #color-panel #color-field #color-tabs {
+  #color-tabs {
     display: block;
     margin: 0;
     padding: 0;
@@ -1047,7 +1047,7 @@ h1 {
     left: 30px;
     right: 0;
   }
-  #color-panel #color-field #color-tabs .tab {
+  #color-tabs .tab {
     height: 100%;
     width: 110px;
     display: block;
@@ -1056,17 +1056,17 @@ h1 {
     list-style-type: none;
     float: left;
   }
-  #color-panel #color-field #color-tabs .tab .tab-inner {
+  #color-tabs .tab .tab-inner {
     font-size: 26px;
   }
-  #color-panel #color-field #color-sliders {
+  #color-sliders {
     position: absolute;
     top: 50px;
     bottom: 0;
     left: 0;
     right: 0;
   }
-  #color-panel #color-field .color-slider {
+  .color-slider {
     margin: 20px;
   }
 }
