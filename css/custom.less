@@ -134,7 +134,12 @@ h1 {
 	}
 
 	.color-slider {
-		margin: 20px;
+		display: none;
+		margin: 10px;
+	}
+
+	#RGB-slider {
+		display: block;
 	}
 
 	// positioning
@@ -167,8 +172,10 @@ h1 {
 			}
 		}
 
-		@parameter-height: 60px;
+		@parameter-height: 50px;
 		@label-width: 40px;
+		@value-width: 55px;
+		@slider-width: 8px;
 
 		.color-parameter-wrap {
 			width: 100%;
@@ -211,12 +218,40 @@ h1 {
 				position: absolute;
 				top: 0;
 				left: @label-width;
-				right: @label-width;
+				right: @value-width;
+
+				.color-slider-wrapper {
+					position: relative;
+
+					width: 100%;
+					height: @slider-width;
+					.vertically-center;
+
+					border-radius: @slider-width;
+					border-style: solid;
+					border-width: 1px;
+					border-color: white;
+
+					background-color: white;
+
+					.color-slider-pinch {
+						width: 10px;
+						height: 30px;
+
+						position: relative;
+						top: 50%;
+						left: 50%;
+						transform: translateX(-50%) translateY(-50%);
+
+						background-color: white;
+						border: solid 3px #111;
+					}
+				}
 			}
 
 			.color-value {
 				display: block;
-				width: @label-width;
+				width: @value-width;
 				height: 100%;
 
 				position: absolute;
@@ -270,11 +305,7 @@ h1 {
 			}
 
 			.color-slider {
-				display: none;
-			}
-
-			#RGB-slider {
-				display: block;
+				margin: 20px;
 			}
 		}
 	}

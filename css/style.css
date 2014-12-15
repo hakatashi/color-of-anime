@@ -931,7 +931,11 @@ h1 {
   clear: both;
 }
 #color-panel .color-slider {
-  margin: 20px;
+  display: none;
+  margin: 10px;
+}
+#color-panel #RGB-slider {
+  display: block;
 }
 #color-panel #color-field {
   margin: 5%;
@@ -960,7 +964,7 @@ h1 {
 }
 #color-panel #color-field .color-parameter-wrap {
   width: 100%;
-  height: 60px;
+  height: 50px;
   position: relative;
 }
 #color-panel #color-field .color-parameter-wrap .color-parameter-label {
@@ -972,7 +976,7 @@ h1 {
   left: 0;
   font-size: 32px;
   font-weight: bold;
-  line-height: 60px;
+  line-height: 50px;
   text-align: center;
 }
 #color-panel #color-field .color-parameter-wrap #RGB-R-label {
@@ -990,18 +994,40 @@ h1 {
   position: absolute;
   top: 0;
   left: 40px;
-  right: 40px;
+  right: 55px;
+}
+#color-panel #color-field .color-parameter-wrap .color-parameter .color-slider-wrapper {
+  width: 100%;
+  height: 8px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
+  background-color: white;
+}
+#color-panel #color-field .color-parameter-wrap .color-parameter .color-slider-wrapper .color-slider-pinch {
+  width: 10px;
+  height: 30px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background-color: white;
+  border: solid 3px #111;
 }
 #color-panel #color-field .color-parameter-wrap .color-value {
   display: block;
-  width: 40px;
+  width: 55px;
   height: 100%;
   position: absolute;
   top: 0;
   right: 0;
   font-size: 20px;
   font-weight: normal;
-  line-height: 60px;
+  line-height: 50px;
   text-align: center;
   color: white;
 }
@@ -1041,9 +1067,6 @@ h1 {
     right: 0;
   }
   #color-panel #color-field .color-slider {
-    display: none;
-  }
-  #color-panel #color-field #RGB-slider {
-    display: block;
+    margin: 20px;
   }
 }
