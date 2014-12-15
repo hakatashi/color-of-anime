@@ -26,7 +26,7 @@ block body
 				#color-sliders
 					.color-slider#RGB-slider
 						each parameter in ['R', 'G', 'B']
-							.color-parameter-wrap
-								label(for='RGB-'+parameter+'-parameter')= parameter
+							.color-parameter-wrap(id='RGB-'+parameter)
+								label.color-parameter-label(for='RGB-'+parameter+'-parameter', id='RGB-'+parameter+'-label')= parameter
 								.color-parameter(id='RGB-'+parameter+'-parameter')
 								.color-value 255

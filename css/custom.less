@@ -34,6 +34,19 @@
 	list-style-type: none;
 }
 
+.clearfix {
+	*zoom: 1;
+
+	&:before, &:after {
+		content: " ";
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+	}
+}
+
 html {
 	background-color: white;
 	font-family: 'Lato', sans-serif;
@@ -113,9 +126,15 @@ h1 {
 		font-weight: bold;
 	}
 
-	.color-slider {
+	#color-sliders {
 		background-color: #4D4D4D;
 		border-radius: 20px;
+
+		.clearfix;
+	}
+
+	.color-slider {
+		margin: 20px;
 	}
 
 	// positioning
@@ -145,6 +164,72 @@ h1 {
 					font-size: 20px;
 					line-height: @tab-height;
 				}
+			}
+		}
+
+		@parameter-height: 60px;
+		@label-width: 40px;
+
+		.color-parameter-wrap {
+			width: 100%;
+			height: @parameter-height;
+
+			position: relative;
+
+			.color-parameter-label {
+				display: block;
+				width: @label-width;
+				height: 100%;
+
+				position: absolute;
+				top: 0;
+				left: 0;
+
+				font-size: 32px;
+				font-weight: bold;
+				line-height: @parameter-height;
+
+				text-align: center;
+			}
+
+			#RGB-R-label {
+				color: #F09E9E;
+			}
+
+			#RGB-G-label {
+				color: #7DF791;
+			}
+
+			#RGB-B-label {
+				color: #AFE5F9;
+			}
+
+			.color-parameter {
+				display: block;
+				height: 100%;
+
+				position: absolute;
+				top: 0;
+				left: @label-width;
+				right: @label-width;
+			}
+
+			.color-value {
+				display: block;
+				width: @label-width;
+				height: 100%;
+
+				position: absolute;
+				top: 0;
+				right: 0;
+
+				font-size: 20px;
+				font-weight: normal;
+				line-height: @parameter-height;
+
+				text-align: center;
+
+				color: white;
 			}
 		}
 	}
@@ -186,9 +271,6 @@ h1 {
 
 			.color-slider {
 				display: none;
-
-				width: 100%;
-				height: 100%;
 			}
 
 			#RGB-slider {
