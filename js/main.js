@@ -66,30 +66,28 @@ function handleComplete() {
 		}
 
 		// enable pinches
-		$('.color-parameter').bind({
-			'touchstart mousedown': function (event) {
-				event.preventDefault();
+		$('.color-parameter').bind('touchstart mousedown', function (event) {
+			event.preventDefault();
 
+			var touchX = getX(event);
+
+			var offset = $(this).offset().left;
+			var width = $(this).width();
+			var $pinch = $(this).find('.color-slider-pinch');
+
+			var movePinch = function (event) {
 				var touchX = getX(event);
+				var value = (touchX - offset) / width;
+				value = Math.max(0, Math.min(value, 1));
+				$pinch.css('left', value * 100 + '%');
+			}
 
-				var offset = $(this).offset().left;
-				var width = $(this).width();
-				var $pinch = $(this).find('.color-slider-pinch');
+			$(window).bind('touchmove mousemove', movePinch);
+			$(window).bind('touchend mouseup', function () {
+				$(this).unbind('touchmove mousemove', movePinch);
+			});
 
-				var movePinch = function (event) {
-					var touchX = getX(event);
-					var value = (touchX - offset) / width;
-					value = Math.max(0, Math.min(value, 1));
-					$pinch.css('left', value * 100 + '%');
-				}
-
-				$(window).bind('touchmove mousemove', movePinch);
-				$(window).bind('touchend mouseup', function () {
-					$(this).unbind('touchmove mousemove', movePinch);
-				});
-
-				movePinch(event);
-			},
+			movePinch(event);
 		})
 	});
 }
