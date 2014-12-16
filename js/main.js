@@ -111,7 +111,9 @@ function handleComplete() {
 		$('#rendering').removeClass('invisible');
 		var timer = new Date();
 		Caman('#canvas', 'img/chino/color.png', function () {
-			this.translate([232, 230, 244], [255, 217, 228]);
+			console.log('Loading Time: ' + (new Date() - timer));
+			this.translate([232, 230, 244], [255, 207, 228]);
+			console.log('Translation Time: ' + (new Date() - timer));
 			this.render(function () {
 				console.log('Rendering Time: ' + (new Date() - timer));
 				$('#image').removeClass('invisible');
