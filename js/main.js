@@ -108,12 +108,14 @@ function handleComplete() {
 		onResize();
 
 		$('#image').prepend(queue.getResult('hana.base'));
+		$('#rendering').removeClass('invisible');
 		var timer = new Date();
 		Caman('#canvas', 'img/hana/color.png', function () {
 			this.translate([255, 255, 224], [65, 48, 122]);
 			this.render(function () {
 				console.log('Rendering Time: ' + (new Date() - timer));
 				$('#image').removeClass('invisible');
+				$('#rendering').addClass('invisible');
 			});
 		});
 

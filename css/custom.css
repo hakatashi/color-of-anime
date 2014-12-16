@@ -233,8 +233,8 @@ h1 {
   -moz-transform: translateX(-50%) translateY(-50%);
   -o-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  background-color: white;
-  border: solid 2px #111;
+  background-color: #4D4D4D;
+  border: solid 2px white;
 }
 .color-value {
   display: block;
