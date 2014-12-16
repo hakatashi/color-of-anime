@@ -105,8 +105,8 @@ function onResize(event) {
 	}
 }
 
-var currentColor = {r: 0, g: 0, b: 0};
-var currentSlider = {r: 0, g: 0, b: 0};
+var currentColor = {R: 0, G: 0, B: 0};
+var currentSlider = {R: 0, G: 0, B: 0};
 var caman = null;
 var busy = true;
 
@@ -120,21 +120,15 @@ function handleComplete() {
 		$('#rendering').removeClass('invisible');
 		var info = queue.getResult('chino.info');
 
-		var color = colorStringToArray(info.color);
-		currentColor = {r: color[0], g: color[1], b: color[2]};
-		currentSlider = {r: color[0], g: color[1], b: color[2]};
+		var defaultColor = colorStringToArray(info.default);
+		currentSlider = {R: defaultColor[0], G: defaultColor[1], B: defaultColor[2]};
 
 		updateSliders();
 
 		var timer = new Date();
 		caman = Caman('#canvas', 'img/chino/color.png', function () {
-			caman.translate(info.color, info.default);
-			caman.render(function () {
-				$('#image').removeClass('invisible');
-				$('#rendering').addClass('invisible');
-
-				busy = false;
-			});
+			busy = false;
+			updateImage();
 		});
 
 		function getX(event) {
@@ -152,8 +146,6 @@ function handleComplete() {
 
 			$pinch.css('left', value / 255 * 100 + '%');
 			$value.text(Math.floor(value));
-
-			console.log($parameter);
 		}
 
 		// enable pinches
@@ -169,8 +161,11 @@ function handleComplete() {
 			var movePinch = function (event) {
 				var touchX = getX(event);
 				var value = (touchX - offset) / width;
+
 				value = Math.max(0, Math.min(value, 1));
 				moveSlider(parameter, value * 255);
+				currentSlider[parameter] = value * 255;
+				updateImage();
 			}
 
 			$(window).bind('touchmove mousemove', movePinch);
@@ -181,13 +176,32 @@ function handleComplete() {
 			movePinch(event);
 		});
 
-		function changeParameter() {
-			// body...
-		}
-
 		function updateSliders() {
 			['R', 'G', 'B'].forEach(function (parameter, index) {
-				moveSlider(parameter, currentColor[parameter.toLowerCase()]);
+				moveSlider(parameter, currentSlider[parameter]);
+			});
+		}
+
+		function updateImage() {
+			if (busy) return;
+			if (currentColor.R === currentSlider.R
+			 && currentColor.G === currentSlider.G
+			 && currentColor.B === currentSlider.B) return;
+
+			busy = true;
+			currentColor.R = currentSlider.R;
+			currentColor.G = currentSlider.G;
+			currentColor.B = currentSlider.B;
+			$('#rendering').removeClass('invisible');
+
+			caman.revert(false);
+			caman.translate(info.color, [currentSlider.R, currentSlider.G, currentSlider.B]);
+			caman.render(function () {
+				$('#image').removeClass('invisible');
+				$('#rendering').addClass('invisible');
+
+				busy = false;
+				updateImage();
 			});
 		}
 	});
