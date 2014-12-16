@@ -79,6 +79,7 @@ function handleComplete() {
 				var movePinch = function (event) {
 					var touchX = getX(event);
 					var value = (touchX - offset) / width;
+					value = Math.max(0, Math.min(value, 1));
 					$pinch.css('left', value * 100 + '%');
 				}
 
