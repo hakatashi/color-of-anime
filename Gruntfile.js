@@ -29,8 +29,15 @@ module.exports = function (grunt) {
 				livereload: true
 			},
 			css: {
-				files: ['**/*.less', '**/*.jade'],
-				tasks: ['compile']
+				files: ['**/*.less'],
+				tasks: ['compile:css']
+			},
+			html: {
+				files: ['**/*.jade'],
+				tasks: ['compile:html']
+			},
+			js: {
+				files: ['**/*.js']
 			}
 		}
 	});
@@ -41,5 +48,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('default', ['compile', 'watch']);
-	grunt.registerTask('compile', ['less', 'concat', 'jade']);
+	grunt.registerTask('compile', ['compile:css', 'compile:html']);
+	grunt.registerTask('compile:css', ['less', 'concat']);
+	grunt.registerTask('compile:html', ['jade']);
 };

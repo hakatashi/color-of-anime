@@ -57,33 +57,38 @@ function handleComplete() {
 			});
 		});
 
-		// enable pinches
-		$('.color-slider-pinch').bind({
-			'touchstart mousedown': function (event) {
-
-				event.preventDefault();
-
-				var isTouch = Boolean(event.originalEvent.changedTouches);
-
-				this.touchX = (isTouch ? event.originalEvent.changedTouches[0].pageX : event.originalEvent.pageX);
-				this.touchLeft = $(this).position().left;
-				this.touched = true;
-			},
-			'touchmove mousemove': function (event) {
-				if (!this.touched) return;
-
-				event.preventDefault();
-
-				var isTouch = Boolean(event.originalEvent.changedTouches);
-				var X = (isTouch ? event.originalEvent.changedTouches[0].pageX : event.originalEvent.pageX);
-
-				$(this).css({
-					left: this.touchLeft - this.touchX + X
-				});
-			},
-			'touchend mouseup': function (event) {
-				this.touched = false;
+		function getX(event) {
+			if (event.originalEvent.changedTouches) {
+				return event.originalEvent.changedTouches[0].pageX;
+			} else {
+				return event.originalEvent.pageX;
 			}
+		}
+
+		// enable pinches
+		$('.color-parameter').bind({
+			'touchstart mousedown': function (event) {
+				event.preventDefault();
+
+				var touchX = getX(event);
+
+				var offset = $(this).offset().left;
+				var width = $(this).width();
+				var $pinch = $(this).find('.color-slider-pinch');
+
+				var movePinch = function (event) {
+					var touchX = getX(event);
+					var value = (touchX - offset) / width;
+					$pinch.css('left', value * 100 + '%');
+				}
+
+				$(window).bind('touchmove mousemove', movePinch);
+				$(window).bind('touchend mouseup', function () {
+					$(this).unbind('touchmove mousemove', movePinch);
+				});
+
+				movePinch(event);
+			},
 		})
 	});
 }
