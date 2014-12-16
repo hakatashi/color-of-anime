@@ -32,11 +32,16 @@ queue.on('fileload', function (event) {
 queue.on('complete', handleComplete, this);
 queue.loadManifest(manifest);
 
+function tinycolorArray(input) {
+	var RGB = tinycolor(input).toRgb();
+	return [RGB.r, RGB.g, RGB.b];
+}
+
 // Extend Caman with custom colorchanging plugin
 
 Caman.Filter.register('translate', function (fromRGB, toRGB) {
-	if (typeof fromRGB === 'string') fromRGB = colorStringToArray(fromRGB);
-	if (typeof toRGB === 'string') toRGB = colorStringToArray(toRGB);
+	if (!Array.isArray(fromRGB)) fromRGB = tinycolorArray(fromRGB);
+	if (!Array.isArray(toRGB)) toRGB = tinycolorArray(toRGB);
 
 	var from = colorConvert.rgb.hsv(fromRGB);
 	var to = colorConvert.rgb.hsv(toRGB);
@@ -120,7 +125,7 @@ function handleComplete() {
 		$('#rendering').removeClass('invisible');
 		var info = queue.getResult('chino.info');
 
-		var defaultColor = colorStringToArray(info.default);
+		var defaultColor = tinycolorArray(info.default);
 		currentSlider = {R: defaultColor[0], G: defaultColor[1], B: defaultColor[2]};
 
 		updateSliders();
@@ -166,6 +171,7 @@ function handleComplete() {
 				moveSlider(parameter, value * 255);
 				currentSlider[parameter] = value * 255;
 				updateImage();
+				updateInfo();
 			}
 
 			$(window).bind('touchmove mousemove', movePinch);
@@ -180,6 +186,13 @@ function handleComplete() {
 			['R', 'G', 'B'].forEach(function (parameter, index) {
 				moveSlider(parameter, currentSlider[parameter]);
 			});
+			updateInfo();
+		}
+
+		function updateInfo() {
+			var color = tinycolor({r: currentSlider.R, g: currentSlider.G, b: currentSlider.B});
+			$('.color-preview-value').text(color.toHexString());
+			$('.color-preview-square').css('background-color', color.toHexString());
 		}
 
 		function updateImage() {
