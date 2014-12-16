@@ -35,6 +35,9 @@ queue.loadManifest(manifest);
 // Extend Caman with custom colorchanging plugin
 
 Caman.Filter.register('translate', function (fromRGB, toRGB) {
+	if (typeof fromRGB === 'string') fromRGB = colorStringToArray(fromRGB);
+	if (typeof toRGB === 'string') toRGB = colorStringToArray(toRGB);
+
 	var from = colorConvert.rgb.hsv(fromRGB);
 	var to = colorConvert.rgb.hsv(toRGB);
 
@@ -102,22 +105,35 @@ function onResize(event) {
 	}
 }
 
+var currentColor = {r: 0, g: 0, b: 0};
+var currentSlider = {r: 0, g: 0, b: 0};
+var caman = null;
+var busy = true;
+
 function handleComplete() {
 	$(document).ready(function () {
 		$(window).resize(onResize);
 		onResize();
 
+		// start rendering
 		$('#image').prepend(queue.getResult('chino.base'));
 		$('#rendering').removeClass('invisible');
+		var info = queue.getResult('chino.info');
+
+		var color = colorStringToArray(info.color);
+		currentColor = {r: color[0], g: color[1], b: color[2]};
+		currentSlider = {r: color[0], g: color[1], b: color[2]};
+
+		updateSliders();
+
 		var timer = new Date();
-		Caman('#canvas', 'img/chino/color.png', function () {
-			console.log('Loading Time: ' + (new Date() - timer));
-			this.translate([232, 230, 244], [255, 207, 228]);
-			console.log('Translation Time: ' + (new Date() - timer));
-			this.render(function () {
-				console.log('Rendering Time: ' + (new Date() - timer));
+		caman = Caman('#canvas', 'img/chino/color.png', function () {
+			caman.translate(info.color, info.default);
+			caman.render(function () {
 				$('#image').removeClass('invisible');
 				$('#rendering').addClass('invisible');
+
+				busy = false;
 			});
 		});
 
@@ -129,21 +145,32 @@ function handleComplete() {
 			}
 		}
 
+		function moveSlider(parameter, value) {
+			var $parameter = $('.color-parameter-wrap[data-parameter=' + parameter + ']');
+			var $pinch = $parameter.find('.color-slider-pinch');
+			var $value = $parameter.find('.color-value');
+
+			$pinch.css('left', value / 255 * 100 + '%');
+			$value.text(Math.floor(value));
+
+			console.log($parameter);
+		}
+
 		// enable pinches
 		$('.color-parameter').bind('touchstart mousedown', function (event) {
 			event.preventDefault();
 
 			var touchX = getX(event);
+			var parameter = $(this).data('parameter');
 
 			var offset = $(this).offset().left;
 			var width = $(this).width();
-			var $pinch = $(this).find('.color-slider-pinch');
 
 			var movePinch = function (event) {
 				var touchX = getX(event);
 				var value = (touchX - offset) / width;
 				value = Math.max(0, Math.min(value, 1));
-				$pinch.css('left', value * 100 + '%');
+				moveSlider(parameter, value * 255);
 			}
 
 			$(window).bind('touchmove mousemove', movePinch);
@@ -152,6 +179,16 @@ function handleComplete() {
 			});
 
 			movePinch(event);
-		})
+		});
+
+		function changeParameter() {
+			// body...
+		}
+
+		function updateSliders() {
+			['R', 'G', 'B'].forEach(function (parameter, index) {
+				moveSlider(parameter, currentColor[parameter.toLowerCase()]);
+			});
+		}
 	});
 }

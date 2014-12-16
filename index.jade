@@ -27,11 +27,11 @@ block body
 					li.tab
 						.tab-inner Lab
 				#color-sliders
-					.color-slider#RGB-slider
+					.color-slider#RGB-slider(data-colorset='RGB')
 						each parameter in ['R', 'G', 'B']
-							.color-parameter-wrap(id='RGB-'+parameter)
+							.color-parameter-wrap(id='RGB-'+parameter, data-parameter=parameter)
 								label.color-parameter-label(for='RGB-'+parameter+'-parameter', id='RGB-'+parameter+'-label')= parameter
-								.color-parameter(id='RGB-'+parameter+'-parameter')
+								.color-parameter(id='RGB-'+parameter+'-parameter', data-parameter=parameter)
 									.color-slider-wrapper
 										.color-slider-pinch
 								.color-value 255
