@@ -3,7 +3,7 @@
 var queue = new createjs.LoadQueue();
 
 var characters = [
-	'hana',
+	'chino',
 ];
 
 var manifest = [];
@@ -60,8 +60,8 @@ function onResize(event) {
 	// fit #image-field to be contained in #image-panel
 	// 'box' means max acceptable size of #image-panel in #image-field.
 
-	var imageHeight = queue.getResult('hana.base').originalHeight;
-	var imageWidth = queue.getResult('hana.base').originalWidth;
+	var imageHeight = queue.getResult('chino.base').originalHeight;
+	var imageWidth = queue.getResult('chino.base').originalWidth;
 
 	var boxWidth = $('#image-panel').width() * 0.9;
 	var boxHeight;
@@ -107,11 +107,11 @@ function handleComplete() {
 		$(window).resize(onResize);
 		onResize();
 
-		$('#image').prepend(queue.getResult('hana.base'));
+		$('#image').prepend(queue.getResult('chino.base'));
 		$('#rendering').removeClass('invisible');
 		var timer = new Date();
-		Caman('#canvas', 'img/hana/color.png', function () {
-			this.translate([255, 255, 224], [65, 48, 122]);
+		Caman('#canvas', 'img/chino/color.png', function () {
+			this.translate([232, 230, 244], [255, 217, 228]);
 			this.render(function () {
 				console.log('Rendering Time: ' + (new Date() - timer));
 				$('#image').removeClass('invisible');
