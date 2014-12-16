@@ -819,6 +819,23 @@ textarea {
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
 }
+.horizontally-center {
+  position: relative;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+.transform-center {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -o-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
 .square {
   position: absolute;
   top: 0;
@@ -987,6 +1004,46 @@ h1 {
   font-size: 20px;
   line-height: 50px;
 }
+.color-infos {
+  margin: 0 20px 20px;
+}
+.color-preview {
+  width: 50%;
+  height: 130px;
+  float: left;
+}
+.color-preview-square {
+  width: 100%;
+  height: 100px;
+  border: solid 2px white;
+  border-radius: 3px;
+  background-color: black;
+}
+.color-preview-value {
+  width: 100%;
+  height: 30px;
+  font-size: 24px;
+  line-height: 30px;
+  color: white;
+  text-align: center;
+}
+.submit-wrapper {
+  width: 45%;
+  height: 130px;
+  float: right;
+}
+.something {
+  height: 80px;
+}
+.submit {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 24px;
+  background-color: #EEE;
+}
 .color-parameter-wrap {
   width: 100%;
   height: 50px;
@@ -1089,6 +1146,9 @@ h1 {
   }
   #color-tabs .tab .tab-inner {
     font-size: 26px;
+  }
+  .color-infos {
+    margin: 0 40px 40px;
   }
   #color-sliders {
     position: absolute;
