@@ -12,8 +12,11 @@ block body
 	h1 Animecolors Test
 	#container
 		#image-panel.panel
-			#image-field.invisible
-				canvas#canvas(width='400', height='400')
+			#image-field
+				#image.invisible
+					canvas#canvas(width='400', height='400')
+				#rendering
+					#rendering-inner Rendering...
 		#color-panel.panel
 			#color-field
 				ul#color-tabs.tabs

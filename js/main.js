@@ -15,7 +15,18 @@ characters.forEach(function (character) {
 	}, {
 		id: character + '.color',
 		src: 'img/' + character + '/color.png',
+	}, {
+		id: character + '.info',
+		src: 'img/' + character + '/info.json',
 	});
+});
+
+queue.on('fileload', function (event) {
+	// preserve size of image
+	if (event.item.type === 'image') {
+		event.result.originalWidth = event.result.width;
+		event.result.originalHeight = event.result.height;
+	}
 });
 
 queue.on('complete', handleComplete, this);
@@ -45,15 +56,64 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 	});
 });
 
+function onResize(event) {
+	// fit #image-field to be contained in #image-panel
+	// 'box' means max acceptable size of #image-panel in #image-field.
+
+	var imageHeight = queue.getResult('hana.base').originalHeight;
+	var imageWidth = queue.getResult('hana.base').originalWidth;
+
+	var boxWidth = $('#image-panel').width() * 0.9;
+	var boxHeight;
+
+	if (matchMedia('(min-width: 900px)').matches) {
+		boxHeight = $('#image-panel').height();
+	} else {
+		boxHeight = 800;
+	}
+
+	var zoom = Math.min(boxWidth / imageWidth, boxHeight / imageHeight);
+	var fieldWidth = imageWidth * zoom;
+	var fieldHeight = imageHeight * zoom;
+
+	$('#image-field').css({
+		width: fieldWidth,
+		height: fieldHeight,
+		'-webkit-transform': 'none',
+		'-moz-transform': 'none',
+		'-o-transform': 'none',
+		transform: 'none'
+	});
+
+	if (matchMedia('(min-width: 900px)').matches) {
+		$('#image-field').css({
+			position: 'absolute',
+			top: ($('#image-panel').height() - fieldHeight) / 2,
+			left: ($('#image-panel').width() - fieldWidth) / 2,
+			margin: '0'
+		});
+	} else {
+		$('#image-field').css({
+			position: 'relative',
+			top: 0,
+			left: 0,
+			margin: '0 5%'
+		});
+	}
+}
+
 function handleComplete() {
 	$(document).ready(function () {
-		$('#image-field').prepend(queue.getResult('hana.base'));
+		$(window).resize(onResize);
+		onResize();
+
+		$('#image').prepend(queue.getResult('hana.base'));
 		var timer = new Date();
 		Caman('#canvas', 'img/hana/color.png', function () {
 			this.translate([255, 255, 224], [65, 48, 122]);
 			this.render(function () {
 				console.log('Rendering Time: ' + (new Date() - timer));
-				$('#image-field').removeClass('invisible');
+				$('#image').removeClass('invisible');
 			});
 		});
 
