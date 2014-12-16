@@ -1,6 +1,9 @@
 .vertically-center {
   position: relative;
   top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
   transform: translateY(-50%);
 }
 .square {
@@ -86,6 +89,9 @@ h1 {
   #image-panel #image-field {
     position: relative;
     top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
     transform: translateY(-50%);
   }
 }
@@ -188,6 +194,9 @@ h1 {
   height: 8px;
   position: relative;
   top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
   transform: translateY(-50%);
   border-radius: 8px;
   border-style: solid;
@@ -201,6 +210,9 @@ h1 {
   position: relative;
   top: 50%;
   left: 50%;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -o-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
   background-color: white;
   border: solid 2px #111;

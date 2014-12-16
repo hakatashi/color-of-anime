@@ -1,5 +1,12 @@
 // utils
 
+.transform(@transform) {
+	-webkit-transform: @transform;
+	-moz-transform: @transform;
+	-o-transform: @transform;
+	transform: @transform;
+}
+
 .user-select(@style) {
 	-webkit-touch-callout: @style;
 	-webkit-user-select: @style;
@@ -12,7 +19,7 @@
 .vertically-center {
 	position: relative;
 	top: 50%;
-	transform: translateY(-50%);
+	.transform(translateY(-50%));
 }
 
 .square {
@@ -248,7 +255,7 @@ h1 {
 	position: relative;
 	top: 50%;
 	left: 50%;
-	transform: translateX(-50%) translateY(-50%);
+	.transform(translateX(-50%) translateY(-50%));
 
 	background-color: white;
 	border: solid 2px #111;
