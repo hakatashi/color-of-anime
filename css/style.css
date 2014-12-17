@@ -1060,6 +1060,15 @@ h1 {
 }
 .color-infos {
   margin: 0 20px 20px;
+  *zoom: 1;
+}
+.color-infos:before,
+.color-infos:after {
+  content: " ";
+  display: table;
+}
+.color-infos:after {
+  clear: both;
 }
 .color-preview {
   width: 50%;
@@ -1114,15 +1123,7 @@ h1 {
   font-weight: bold;
   line-height: 50px;
   text-align: center;
-}
-#RGB-R-label {
-  color: #F09E9E;
-}
-#RGB-G-label {
-  color: #7DF791;
-}
-#RGB-B-label {
-  color: #AFE5F9;
+  color: white;
 }
 .color-parameter {
   display: block;
@@ -1142,9 +1143,7 @@ h1 {
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
   border-radius: 8px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: white;
+  border: solid 2px white;
   background-color: white;
 }
 .color-slider-pinch {

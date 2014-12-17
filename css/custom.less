@@ -270,6 +270,7 @@ h1 {
 
 .color-infos {
 	margin: 0 20px 20px;
+	.clearfix;
 }
 
 .color-preview {
@@ -343,18 +344,7 @@ h1 {
 	line-height: @parameter-height;
 
 	text-align: center;
-}
-
-#RGB-R-label {
-	color: #F09E9E;
-}
-
-#RGB-G-label {
-	color: #7DF791;
-}
-
-#RGB-B-label {
-	color: #AFE5F9;
+	color: white;
 }
 
 .color-parameter {
@@ -375,9 +365,7 @@ h1 {
 	.vertically-center;
 
 	border-radius: @slider-width;
-	border-style: solid;
-	border-width: 1px;
-	border-color: white;
+	border: solid 2px white;
 
 	background-color: white;
 }
