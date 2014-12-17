@@ -1,15 +1,34 @@
-# humanstxt.org/
-# The humans responsible & technology colophon
-
 # TEAM
 
-    <name> -- <role> -- <twitter>
+Designer & Developer: hakatashi
+Site: http://hakatashi.com/
+Twitter: @hakatashi
 
 # THANKS
 
-    <name>
+* Every Anime Creator
+* NPCA Mempers: Compatibility Tests
+* GitHub: Hosting, Social Coding
 
 # TECHNOLOGY COLOPHON
 
-    HTML5, CSS3
-    Normalize.css, jQuery, Modernizr
+* HTML5
+* HTML5 Canvas API
+* CSS3
+* Normalize.css
+* jQuery
+* Modernizr
+* HTML5 Boilerplate
+* Node.js
+* Grunt
+* livereload
+* Jade
+* Less
+* Google Fonts
+* Ionicons
+* PreloadJS
+* Caman.js
+* color-convert
+* TinyColor
+* Google Analytics
+* Browse Happy
