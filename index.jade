@@ -34,7 +34,7 @@ block body
 					.color-slider#RGB-slider(data-colorset='RGB')
 						each parameter in ['R', 'G', 'B']
 							.color-parameter-wrap(id='RGB-'+parameter, data-parameter=parameter)
-								label.color-parameter-label(for='RGB-'+parameter+'-parameter', id='RGB-'+parameter+'-label')= parameter
+								label.color-parameter-label(id='RGB-'+parameter+'-label')= parameter
 								.color-parameter(id='RGB-'+parameter+'-parameter', data-parameter=parameter)
 									.color-slider-wrapper
 										.color-slider-pinch
