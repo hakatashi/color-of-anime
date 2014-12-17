@@ -214,6 +214,23 @@ function handleComplete() {
 			var color = tinycolor({r: currentSlider.R, g: currentSlider.G, b: currentSlider.B});
 			$('.color-preview-value').text(color.toHexString());
 			$('.color-preview-square').css('background-color', color.toHexString());
+
+			// update sliders gradients
+			['R', 'G', 'B'].forEach(function (parameter, index) {
+				var par = parameter.toLowerCase();
+				var $parameter = $('.color-parameter-wrap[data-parameter=' + parameter + ']');
+				var $slider = $parameter.find('.color-slider-wrapper');
+
+				var colorStop = null;
+				var colorStops = [];
+				for (var i = 0; i < 7; i++) {
+					colorStop = {r: currentSlider.R, g: currentSlider.G, b: currentSlider.B};
+					colorStop[par] = 255 / 6 * i;
+					colorStops.push(colorStop);
+				}
+
+				$slider.gradient(colorStops);
+			});
 		}
 
 		function updateImage() {
