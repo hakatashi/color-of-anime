@@ -16,6 +16,47 @@
 	user-select: @style;
 }
 
+.animation(@animation) {
+	-webkit-animation: @animation;
+	-moz-animation: @animation;
+	-o-animation: @animation;
+	animation: @animation;
+}
+
+.animation-timing-function(@animation-timing-function) {
+	-webkit-animation-timing-function: @animation-timing-function;
+	animation-timing-function: @animation-timing-function;
+}
+
+.animation-iteration-count(@animation-iteration-count) {
+	-webkit-animation-iteration-count: @animation-iteration-count;
+	animation-iteration-count: @animation-iteration-count;
+}
+
+.rotation() {
+	from {
+		.transform(rotate(0deg));
+	}
+	to {
+		.transform(rotate(360deg));
+	}
+}
+
+@keyframes rotation {
+	.rotation();
+}
+
+@-webkit-keyframes rotation {
+	.rotation();
+}
+
+.animateRotation {
+	.transform(rotate(0deg));
+	.animation(rotation 1s);
+	.animation-timing-function(linear);
+	.animation-iteration-count(infinite);
+}
+
 .vertically-center {
 	position: relative;
 	top: 50%;
@@ -76,6 +117,13 @@ html {
 	font-family: 'Lato', sans-serif;
 }
 
+a {
+	&, &:link, &:visited, &:hover, &:active {
+		text-decoration: none;
+		color: #5998DF;
+	}
+}
+
 h1 {
 	font-weight: 900;
 	font-size: 48px;
@@ -114,51 +162,51 @@ h1 {
 }
 
 #image-panel {
-	#image-field {
-		margin: 0 5%;
-		width: 90%;
-		position: relative;
+	position: relative;
+}
 
-		@media screen and (min-width: 900px) {
-			.vertically-center;
-		}
-
-		.user-select(none);
-
-		img, canvas {
-			width: 100%;
-		}
-
-		canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
-		}
-
-		#rendering {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-
-			background-color: gray;
-			opacity: 0.8;
-
-			&-inner {
-				position: absolute;
-				top: 50%;
-				left: 0;
-				width: 100%;
-
-				margin-top: -0.5em;
-
-				font-size: 48px;
-				text-align: center;
-				color: white;
-			}
-		}
+#rendering {
+	&:before {
+		content: "\f29c";
+		font-family: "Ionicons";
+		.animateRotation;
 	}
+
+	width: 100%;
+	height: auto;
+	line-height: 40px;
+
+	text-align: center;
+
+	font-size: 26px;
+}
+
+#image-field {
+	margin: 0 5%;
+	width: 90%;
+	position: relative;
+
+	.user-select(none);
+
+	img, canvas {
+		width: 100%;
+	}
+
+	canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+}
+
+#image-info {
+	width: 100%;
+	height: auto;
+	line-height: 30px;
+
+	text-align: center;
+
+	font-size: 18px;
 }
 
 @tab-height: 50px;
@@ -175,7 +223,7 @@ h1 {
 
 #color-sliders {
 	background-color: #4D4D4D;
-	border-radius: 20px;
+	border-radius: 15px;
 
 	.clearfix;
 }
@@ -366,6 +414,20 @@ h1 {
 }
 
 @media screen and (min-width: 900px) {
+	#image-field {
+		.vertically-center;
+	}
+
+	#rendering {
+		height: 40px;
+		font-size: 30px;
+	}
+
+	#image-info {
+		height: 30px;
+		font-size: 18px;
+	}
+
 	#color-field {
 		position: relative;
 

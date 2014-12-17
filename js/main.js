@@ -68,14 +68,17 @@ function onResize(event) {
 	// fit #image-field to be contained in #image-panel
 	// 'box' means max acceptable size of #image-panel in #image-field.
 
+	var RENDERING_HEIGHT = 40;
+	var IMAGEINFO_HEIGHT = 30;
+
 	var imageHeight = queue.getResult('chino.base').originalHeight;
 	var imageWidth = queue.getResult('chino.base').originalWidth;
 
 	var boxWidth = $('#image-panel').width() * 0.9;
-	var boxHeight;
+	var boxHeight = null;
 
 	if (matchMedia('(min-width: 900px)').matches) {
-		boxHeight = $('#image-panel').height();
+		boxHeight = $('#image-panel').height() - RENDERING_HEIGHT - IMAGEINFO_HEIGHT;
 	} else {
 		boxHeight = 800;
 	}
@@ -94,11 +97,21 @@ function onResize(event) {
 	});
 
 	if (matchMedia('(min-width: 900px)').matches) {
+		var imageTop = ($('#image-panel').height() - fieldHeight) / 2;
+
 		$('#image-field').css({
 			position: 'absolute',
-			top: ($('#image-panel').height() - fieldHeight) / 2,
+			top: imageTop,
 			left: ($('#image-panel').width() - fieldWidth) / 2,
 			margin: '0'
+		});
+		$('#rendering').css({
+			position: 'absolute',
+			bottom: imageTop + fieldHeight
+		});
+		$('#image-info').css({
+			position: 'absolute',
+			top: imageTop + fieldHeight
 		});
 	} else {
 		$('#image-field').css({
@@ -106,6 +119,14 @@ function onResize(event) {
 			top: 0,
 			left: 0,
 			margin: '0 5%'
+		});
+		$('#rendering').css({
+			position: 'relative',
+			bottom: 0
+		});
+		$('#image-info').css({
+			position: 'relative',
+			top: 0
 		});
 	}
 }

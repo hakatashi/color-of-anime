@@ -4,6 +4,7 @@ block head
 	title Color of Anime
 	link(rel='stylesheet', href='css/style.css')
 	link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Lato:300,700,900')
+	link(rel='stylesheet', href='//code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css')
 	script(src='js/vendor/color-convert-0.5.1.min.js')
 	script(src='//code.createjs.com/preloadjs-0.4.1.min.js')
 	script(src='//cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js')
@@ -13,11 +14,13 @@ block body
 	h1 Color of Anime
 	#container
 		#image-panel.panel
+			#rendering  Rendering...
 			#image-field
 				#image.invisible
 					canvas#canvas(width='400', height='400')
-				#rendering.invisible
-					#rendering-inner Rendering...
+			#image-info
+				| 香風智乃(ご注文はうさぎですか?) - 
+				a(href='http://www.gochiusa.com/news/hp0001/index00040000.html') Color Source
 		#color-panel.panel
 			#color-field
 				ul#color-tabs.tabs

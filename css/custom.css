@@ -1,3 +1,45 @@
+@keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.animateRotation {
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-animation: rotation 1s;
+  -moz-animation: rotation 1s;
+  -o-animation: rotation 1s;
+  animation: rotation 1s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
 .vertically-center {
   position: relative;
   top: 50%;
@@ -56,6 +98,14 @@ html {
   background-color: white;
   font-family: 'Lato', sans-serif;
 }
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+  color: #5998DF;
+}
 h1 {
   font-weight: 900;
   font-size: 48px;
@@ -91,7 +141,33 @@ h1 {
     float: left;
   }
 }
-#image-panel #image-field {
+#image-panel {
+  position: relative;
+}
+#rendering {
+  width: 100%;
+  height: auto;
+  line-height: 40px;
+  text-align: center;
+  font-size: 26px;
+}
+#rendering:before {
+  content: "\f29c";
+  font-family: "Ionicons";
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-animation: rotation 1s;
+  -moz-animation: rotation 1s;
+  -o-animation: rotation 1s;
+  animation: rotation 1s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+#image-field {
   margin: 0 5%;
   width: 90%;
   position: relative;
@@ -102,43 +178,21 @@ h1 {
   -ms-user-select: none;
   user-select: none;
 }
-@media screen and (min-width: 900px) {
-  #image-panel #image-field {
-    position: relative;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    transform: translateY(-50%);
-  }
-}
-#image-panel #image-field img,
-#image-panel #image-field canvas {
+#image-field img,
+#image-field canvas {
   width: 100%;
 }
-#image-panel #image-field canvas {
+#image-field canvas {
   position: absolute;
   top: 0;
   left: 0;
 }
-#image-panel #image-field #rendering {
-  position: absolute;
+#image-info {
   width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: gray;
-  opacity: 0.8;
-}
-#image-panel #image-field #rendering-inner {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  margin-top: -0.5em;
-  font-size: 48px;
+  height: auto;
+  line-height: 30px;
   text-align: center;
-  color: white;
+  font-size: 18px;
 }
 .tab-inner {
   background-color: SlateBlue;
@@ -148,7 +202,7 @@ h1 {
 }
 #color-sliders {
   background-color: #4D4D4D;
-  border-radius: 20px;
+  border-radius: 15px;
   *zoom: 1;
 }
 #color-sliders:before,
@@ -307,6 +361,22 @@ h1 {
   color: white;
 }
 @media screen and (min-width: 900px) {
+  #image-field {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+  #rendering {
+    height: 40px;
+    font-size: 30px;
+  }
+  #image-info {
+    height: 30px;
+    font-size: 18px;
+  }
   #color-field {
     position: relative;
     height: 90%;
