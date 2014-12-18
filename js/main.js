@@ -3,7 +3,7 @@
 var queue = new createjs.LoadQueue();
 
 var characters = [
-	'chino',
+	'syaro',
 ];
 
 var manifest = [];
@@ -71,8 +71,8 @@ function onResize(event) {
 	var RENDERING_HEIGHT = 40;
 	var IMAGEINFO_HEIGHT = 30;
 
-	var imageHeight = queue.getResult('chino.base').originalHeight;
-	var imageWidth = queue.getResult('chino.base').originalWidth;
+	var imageHeight = queue.getResult('syaro.base').originalHeight;
+	var imageWidth = queue.getResult('syaro.base').originalWidth;
 
 	var boxWidth = $('#image-panel').width() * 0.9;
 	var boxHeight = null;
@@ -142,9 +142,9 @@ function handleComplete() {
 		onResize();
 
 		// start rendering
-		$('#image').prepend(queue.getResult('chino.base'));
+		$('#image').prepend(queue.getResult('syaro.base'));
 		$('#rendering').removeClass('invisible');
-		var info = queue.getResult('chino.info');
+		var info = queue.getResult('syaro.info');
 
 		var defaultColor = tinycolorArray(info.default);
 		currentSlider = {R: defaultColor[0], G: defaultColor[1], B: defaultColor[2]};
@@ -152,7 +152,7 @@ function handleComplete() {
 		updateSliders();
 
 		var timer = new Date();
-		caman = Caman('#canvas', 'img/chino/color.png', function () {
+		caman = Caman('#canvas', 'img/syaro/color.png', function () {
 			busy = false;
 			updateImage();
 		});
