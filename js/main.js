@@ -197,8 +197,8 @@ function handleComplete() {
 				var value = (touchX - offset) / width;
 
 				value = Math.max(0, Math.min(value, 1));
-				moveSlider(parameter, value * 255);
-				currentSlider[parameter] = value * 255;
+				moveSlider(parameter, Math.floor(value * 255));
+				currentSlider[parameter] = Math.floor(value * 255);
 				updateImage();
 				updateInfo();
 			}
