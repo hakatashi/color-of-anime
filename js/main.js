@@ -146,9 +146,17 @@ function handleComplete() {
 		$('#rendering').removeClass('invisible');
 		var info = queue.getResult('syaro.info');
 
-		var defaultColor = tinycolorArray(info.default);
-		currentSlider = {R: defaultColor[0], G: defaultColor[1], B: defaultColor[2]};
+		var defaultColor = tinycolor(info.default);
+		var initColor = null;
+		var rgb = null;
 
+		if (location.hash && (initColor = tinycolor(location.hash))._format) {
+			rgb = initColor.toRgb();
+		} else {
+			rgb = defaultColor.toRgb();
+		}
+
+		currentSlider = {R: rgb.r, G: rgb.g, B: rgb.b};
 		updateSliders();
 
 		var timer = new Date();
