@@ -211,6 +211,33 @@ function handleComplete() {
 			movePinch(event);
 		});
 
+		$('.color-preview-value').click(function (event) {
+			$(this).attr('contenteditable', true);
+			$(this).selectText();
+
+			// handle enter keypress
+			$(this).keypress(function (e) {
+				if (e.which === 13) {
+					$(this).blur();
+					return false;
+				} else return true;
+			});
+
+			$(this).blur(function () {
+				$(this).attr('contenteditable', false);
+
+				var newColor = tinycolor($(this).text());
+				if (newColor._format) {
+					var rgb = newColor.toRgb();
+					currentSlider = {R: rgb.r, G: rgb.g, B: rgb.b};
+					updateSliders();
+					updateImage();
+				} else {
+					updateInfo();
+				}
+			});
+		});
+
 		function updateSliders() {
 			['R', 'G', 'B'].forEach(function (parameter, index) {
 				moveSlider(parameter, currentSlider[parameter]);
@@ -222,6 +249,8 @@ function handleComplete() {
 			var color = tinycolor({r: currentSlider.R, g: currentSlider.G, b: currentSlider.B});
 			$('.color-preview-value').text(color.toHexString());
 			$('.color-preview-square').css('background-color', color.toHexString());
+
+			location.replace(color.toHexString());
 
 			// update sliders gradients
 			['R', 'G', 'B'].forEach(function (parameter, index) {
