@@ -204,7 +204,7 @@ function handleComplete() {
 
 			var display = null;
 			if (parameter === 'H') display = value * 360;
-			else if (parameter === 'S' || parameter === 'V') display = value * 100;
+			else if (parameter === 'S' || parameter === 'V' || parameter === 'L') display = value * 100;
 			else if (parameter === 'a' || parameter === 'b') display = value * 200 - 100;
 			else display = value * 255;
 			$value.text(Math.floor(display));
@@ -283,7 +283,7 @@ function handleComplete() {
 			var baseColor = {
 				RGB: [slider.R * 255, slider.G * 255,       slider.B * 255      ],
 				HSV: [slider.H * 360, slider.S * 100,       slider.V * 100      ],
-				Lab: [slider.L * 255, slider.a * 200 - 100, slider.b * 200 - 100]
+				Lab: [slider.L * 100, slider.a * 200 - 100, slider.b * 200 - 100]
 			}[base];
 
 			colorsets.forEach(function (colorset) {
@@ -296,7 +296,7 @@ function handleComplete() {
 					} else if (name === 'HSV') {
 						currentSlider.HSV = {H: color[0] / 360, S: color[1] / 100, V: color[2] / 100};
 					} else if (name === 'Lab') {
-						currentSlider.Lab = {L: color[0] / 255, a: (color[1] + 100) / 200, b: (color[2] + 100) / 200};
+						currentSlider.Lab = {L: color[0] / 100, a: (color[1] + 100) / 200, b: (color[2] + 100) / 200};
 					}
 				}
 
@@ -335,7 +335,7 @@ function handleComplete() {
 						color = {
 							RGB: [color.R * 255, color.G * 255,       color.B * 255      ],
 							HSV: [color.H * 360, color.S * 100,       color.V * 100      ],
-							Lab: [color.L * 255, color.a * 200 - 100, color.b * 200 - 100]
+							Lab: [color.L * 100, color.a * 200 - 100, color.b * 200 - 100]
 						}[name];
 
 						if (name === 'RGB') colorStop = color;
