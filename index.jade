@@ -38,7 +38,7 @@ block body
 								each parameter in colorset
 									.color-parameter-wrap(id=name+'-'+parameter, data-parameter=parameter)
 										label.color-parameter-label(id=name+'-'+parameter+'-label')= parameter
-										.color-parameter(id=name+'-'+parameter+'-parameter', data-parameter=parameter)
+										.color-parameter(id=name+'-'+parameter+'-parameter', data-colorset=name, data-parameter=parameter)
 											.color-slider-wrapper
 												.color-slider-pinch
 										.color-value 0

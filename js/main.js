@@ -134,6 +134,7 @@ function onResize(event) {
 var currentColor = {R: 0, G: 0, B: 0};
 var currentSlider = {R: 0, G: 0, B: 0};
 var colorset = 'RGB';
+var colorsets = [['R', 'G', 'B'], ['H', 'S', 'V'], ['L', 'a', 'b']];
 var caman = null;
 var busy = true;
 
@@ -179,7 +180,11 @@ function handleComplete() {
 			var $pinch = $parameter.find('.color-slider-pinch');
 			var $value = $parameter.find('.color-value');
 
-			$pinch.css('left', value / 255 * 100 + '%');
+			if (parameter === 'a' || parameter === 'b') {
+				$pinch.css('left', value / 255 * 100 + 50 + '%');
+			} else {
+				$pinch.css('left', value / 255 * 100 + '%');
+			}
 			$value.text(Math.floor(value));
 		}
 
@@ -187,21 +192,49 @@ function handleComplete() {
 		$('.color-parameter').bind('touchstart mousedown', function (event) {
 			event.preventDefault();
 
+			var $this = $(this);
+
 			var touchX = getX(event);
 			var parameter = $(this).data('parameter');
 
 			var offset = $(this).offset().left;
 			var width = $(this).width();
+			var colorset = $(this).data('colorset');
 
-			var movePinch = function (event) {
-				var touchX = getX(event);
-				var value = (touchX - offset) / width;
+			var movePinch = null;
 
-				value = Math.max(0, Math.min(value, 1));
-				moveSlider(parameter, Math.floor(value * 255));
-				currentSlider[parameter] = Math.floor(value * 255);
-				updateImage();
-				updateInfo();
+			if (colorset === 'RGB') {
+				movePinch = function (event) {
+					var touchX = getX(event);
+					var value = (touchX - offset) / width;
+
+					value = Math.max(0, Math.min(value, 1));
+					currentSlider[parameter] = Math.floor(value * 255);
+					updateImage();
+					updateSliders();
+				}
+			} else {
+				movePinch = function (event) {
+					var paramIndex = {H: 0, S: 1, V: 2, L: 0, a: 1, b: 2}[parameter];
+					var rgb = [currentSlider.R, currentSlider.G, currentSlider.B];
+
+					var touchX = getX(event);
+					var value = (touchX - offset) / width;
+					value = Math.max(0, Math.min(value, 1));
+					if (parameter === 'a' || parameter === 'b') value -= 0.5;
+
+					var currentColor = colorConvert.rgb[colorset.toLowerCase()](rgb);
+					if (parameter === 'H') currentColor[paramIndex] = value * 360;
+					else if (parameter === 'a') currentColor[paramIndex] = value * 200;
+					else if (parameter === 'b') currentColor[paramIndex] = value * 200;
+					else currentColor[paramIndex] = value * 100;
+
+					var newColor = colorConvert[colorset.toLowerCase()].rgb(currentColor);
+					currentSlider = {R: newColor[0], G: newColor[1], B: newColor[2]};
+
+					updateImage();
+					updateSliders();
+				}
 			}
 
 			$(window).bind('touchmove mousemove', movePinch);
@@ -250,9 +283,24 @@ function handleComplete() {
 		});
 
 		function updateSliders() {
-			['R', 'G', 'B'].forEach(function (parameter, index) {
-				moveSlider(parameter, currentSlider[parameter]);
+			var rgb = [currentSlider.R, currentSlider.G, currentSlider.B];
+
+			colorsets.forEach(function (colorset) {
+				var name = colorset.join('');
+				var color = null;
+
+				if (name === 'RGB') color = rgb;
+				else color = colorConvert.rgb[name.toLowerCase()](rgb).map(function (val) { return val / 100 * 255 });
+
+				colorset.forEach(function (parameter, index) {
+					if (parameter === 'H') color[index] = color[index] / 360 * 100;
+					else if (parameter === 'a') color[index] = color[index] / 200 * 100;
+					else if (parameter === 'b') color[index] = color[index] / 200 * 100;
+
+					moveSlider(parameter, color[index]);
+				});
 			});
+
 			updateInfo();
 		}
 
@@ -264,20 +312,41 @@ function handleComplete() {
 			location.replace(color.toHexString());
 
 			// update sliders gradients
-			['R', 'G', 'B'].forEach(function (parameter, index) {
-				var par = parameter.toLowerCase();
-				var $parameter = $('.color-parameter-wrap[data-parameter=' + parameter + ']');
-				var $slider = $parameter.find('.color-slider-wrapper');
+			colorsets.forEach(function (colorset) {
+				var name = colorset.join('');
 
-				var colorStop = null;
-				var colorStops = [];
-				for (var i = 0; i < 7; i++) {
-					colorStop = {r: currentSlider.R, g: currentSlider.G, b: currentSlider.B};
-					colorStop[par] = 255 / 6 * i;
-					colorStops.push(colorStop);
-				}
+				colorset.forEach(function (parameter, index) {
+					var par = parameter.toLowerCase();
+					var $parameter = $('.color-parameter-wrap[data-parameter=' + parameter + ']');
+					var $slider = $parameter.find('.color-slider-wrapper');
 
-				$slider.gradient(colorStops);
+					var color = null;
+					var colorStop = null;
+					var colorStops = [];
+					var rgb = [currentSlider.R, currentSlider.G, currentSlider.B];
+					for (var i = 0; i < 7; i++) {
+						if (name === 'RGB') {
+							colorStop = {r: currentSlider.R, g: currentSlider.G, b: currentSlider.B};
+							colorStop[par] = 255 / 6 * i;
+						} else if (name === 'HSV') {
+							color = colorConvert.rgb.hsv(rgb);
+							if (parameter === 'H') color[0] = 360 / 6 * i;
+							else color[index] = 100 / 6 * i;
+							color = colorConvert.hsv.rgb(color);
+							colorStop = {r: color[0], g: color[1], b: color[2]};
+						} else if (name === 'Lab') {
+							color = colorConvert.rgb.lab(rgb);
+							if (parameter === 'L') color[0] = 100 / 6 * i;
+							else if (parameter === 'a') color[1] = 200 / 6 * i - 100;
+							else if (parameter === 'b') color[2] = 200 / 6 * i - 100;
+							color = colorConvert.lab.rgb(color);
+							colorStop = {r: color[0], g: color[1], b: color[2]};
+						}
+						colorStops.push(colorStop);
+					}
+
+					$slider.gradient(colorStops);
+				});
 			});
 		}
 
