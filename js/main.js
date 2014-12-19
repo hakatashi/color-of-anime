@@ -225,6 +225,7 @@ function handleComplete() {
 
 			$(this).blur(function () {
 				$(this).attr('contenteditable', false);
+				$(this).unbind('keypress blur');
 
 				var newColor = tinycolor($(this).text());
 				if (newColor._format) {
