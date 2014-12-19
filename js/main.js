@@ -43,24 +43,27 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 	if (!Array.isArray(fromRGB)) fromRGB = tinycolorArray(fromRGB);
 	if (!Array.isArray(toRGB)) toRGB = tinycolorArray(toRGB);
 
-	var from = colorConvert.rgb.hsv(fromRGB);
-	var to = colorConvert.rgb.hsv(toRGB);
+	var from = colorConvert.rgb.lab(fromRGB);
+	var to = colorConvert.rgb.lab(toRGB);
 
 	this.process('translate', function (colorRGB) {
-		var color = colorConvert.rgb.hsv([colorRGB.r, colorRGB.g, colorRGB.b]);
+		var color = colorConvert.rgb.lab([colorRGB.r, colorRGB.g, colorRGB.b]);
 
-		color[0] = (color[0] + to[0] - from[0] + 360) % 360;
+		color[0] = Math.max(0, color[0] + to[0] - from[0]);
+		color[1] = color[1] + to[1] - from[1];
+		color[2] = color[2] + to[2] - from[2];
 /*
+		color[0] = (color[0] + to[0] - from[0] + 360) % 360;
+
+		color[1] = Math.max(0, Math.min(color[1] + to[1] - from[1], 100));
+		color[2] = Math.max(0, Math.min(color[2] + to[2] - from[2], 100));
+
 		if (color[1] <= from[1]) color[1] = color[1] * to[1] / from[1];
 		else color[1] = 100 - (100 - color[1]) * (100 - to[1]) / (100 - from[1]);
 		if (color[2] <= from[2]) color[2] = color[2] * to[2] / from[2];
 		else color[2] = 100 - (100 - color[2]) * (100 - to[2]) / (100 - from[2]);
 */
-
-		color[1] = Math.max(0, Math.min(color[1] + to[1] - from[1], 100));
-		color[2] = Math.max(0, Math.min(color[2] + to[2] - from[2], 100));
-
-		var RGB = colorConvert.hsv.rgb(color);
+		var RGB = colorConvert.lab.rgb(color);
 		colorRGB.r = RGB[0];
 		colorRGB.g = RGB[1];
 		colorRGB.b = RGB[2];
