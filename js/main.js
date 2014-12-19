@@ -64,6 +64,14 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 	});
 });
 
+colorConvert.hsv.lab = function (color) {
+	return colorConvert.rgb.lab(colorConvert.hsv.rgb(color));
+};
+
+colorConvert.lab.hsv = function (color) {
+	return colorConvert.rgb.hsv(colorConvert.lab.rgb(color));
+};
+
 function onResize(event) {
 	// fit #image-field to be contained in #image-panel
 	// 'box' means max acceptable size of #image-panel in #image-field.
@@ -132,7 +140,11 @@ function onResize(event) {
 }
 
 var currentColor = {R: 0, G: 0, B: 0};
-var currentSlider = {R: 0, G: 0, B: 0};
+var currentSlider = {
+	RGB: {R: 0, G: 0, B: 0},
+	HSV: {H: 0, S: 0, V: 0},
+	Lab: {L: 0, a: 0, b: 0}
+};
 var colorset = 'RGB';
 var colorsets = [['R', 'G', 'B'], ['H', 'S', 'V'], ['L', 'a', 'b']];
 var caman = null;
@@ -158,8 +170,8 @@ function handleComplete() {
 			rgb = defaultColor.toRgb();
 		}
 
-		currentSlider = {R: rgb.r, G: rgb.g, B: rgb.b};
-		updateSliders();
+		currentSlider.RGB = {R: rgb.r / 255, G: rgb.g / 255, B: rgb.b / 255};
+		updateSliders('RGB');
 
 		var timer = new Date();
 		caman = Caman('#canvas', 'img/syaro/color.png', function () {
@@ -180,12 +192,14 @@ function handleComplete() {
 			var $pinch = $parameter.find('.color-slider-pinch');
 			var $value = $parameter.find('.color-value');
 
-			if (parameter === 'a' || parameter === 'b') {
-				$pinch.css('left', value / 255 * 100 + 50 + '%');
-			} else {
-				$pinch.css('left', value / 255 * 100 + '%');
-			}
-			$value.text(Math.floor(value));
+			$pinch.css('left', value * 100 + '%');
+
+			var display = null;
+			if (parameter === 'H') display = value * 360;
+			else if (parameter === 'S' || parameter === 'V') display = value * 100;
+			else if (parameter === 'a' || parameter === 'b') display = value * 200 - 100;
+			else display = value * 255;
+			$value.text(Math.floor(display));
 		}
 
 		// enable pinches
@@ -201,41 +215,15 @@ function handleComplete() {
 			var width = $(this).width();
 			var colorset = $(this).data('colorset');
 
-			var movePinch = null;
+			var movePinch = function (event) {
+				var touchX = getX(event);
+				var value = (touchX - offset) / width;
 
-			if (colorset === 'RGB') {
-				movePinch = function (event) {
-					var touchX = getX(event);
-					var value = (touchX - offset) / width;
-
-					value = Math.max(0, Math.min(value, 1));
-					currentSlider[parameter] = Math.floor(value * 255);
-					updateImage();
-					updateSliders();
-				}
-			} else {
-				movePinch = function (event) {
-					var paramIndex = {H: 0, S: 1, V: 2, L: 0, a: 1, b: 2}[parameter];
-					var rgb = [currentSlider.R, currentSlider.G, currentSlider.B];
-
-					var touchX = getX(event);
-					var value = (touchX - offset) / width;
-					value = Math.max(0, Math.min(value, 1));
-					if (parameter === 'a' || parameter === 'b') value -= 0.5;
-
-					var currentColor = colorConvert.rgb[colorset.toLowerCase()](rgb);
-					if (parameter === 'H') currentColor[paramIndex] = value * 360;
-					else if (parameter === 'a') currentColor[paramIndex] = value * 200;
-					else if (parameter === 'b') currentColor[paramIndex] = value * 200;
-					else currentColor[paramIndex] = value * 100;
-
-					var newColor = colorConvert[colorset.toLowerCase()].rgb(currentColor);
-					currentSlider = {R: newColor[0], G: newColor[1], B: newColor[2]};
-
-					updateImage();
-					updateSliders();
-				}
-			}
+				value = Math.max(0, Math.min(value, 1));
+				currentSlider[colorset][parameter] = value;
+				updateSliders(colorset);
+				updateImage();
+			};
 
 			$(window).bind('touchmove mousemove', movePinch);
 			$(window).bind('touchend mouseup', function () {
@@ -264,8 +252,8 @@ function handleComplete() {
 				var newColor = tinycolor($(this).text());
 				if (newColor._format) {
 					var rgb = newColor.toRgb();
-					currentSlider = {R: rgb.r, G: rgb.g, B: rgb.b};
-					updateSliders();
+					currentSlider.RGB = {R: rgb.r / 255, G: rgb.g / 255, B: rgb.b / 255};
+					updateSliders('RGB');
 					updateImage();
 				} else {
 					updateInfo();
@@ -282,22 +270,30 @@ function handleComplete() {
 			$(this).parent('.tab').addClass('selected');
 		});
 
-		function updateSliders() {
-			var rgb = [currentSlider.R, currentSlider.G, currentSlider.B];
+		function updateSliders(base) {
+			var slider = currentSlider[base];
+			var baseColor = {
+				RGB: [slider.R * 255, slider.G * 255,       slider.B * 255      ],
+				HSV: [slider.H * 360, slider.S * 100,       slider.V * 100      ],
+				Lab: [slider.L * 255, slider.a * 200 - 100, slider.b * 200 - 100]
+			}[base];
 
 			colorsets.forEach(function (colorset) {
 				var name = colorset.join('');
-				var color = null;
 
-				if (name === 'RGB') color = rgb;
-				else color = colorConvert.rgb[name.toLowerCase()](rgb).map(function (val) { return val / 100 * 255 });
+				if (name !== base) {
+					var color = colorConvert[base.toLowerCase()][name.toLowerCase()](baseColor);
+					if (name === 'RGB') {
+						currentSlider.RGB = {R: color[0] / 255, G: color[1] / 255, B: color[2] / 255};
+					} else if (name === 'HSV') {
+						currentSlider.HSV = {H: color[0] / 360, S: color[1] / 100, V: color[2] / 100};
+					} else if (name === 'Lab') {
+						currentSlider.Lab = {L: color[0] / 255, a: (color[1] + 100) / 200, b: (color[2] + 100) / 200};
+					}
+				}
 
-				colorset.forEach(function (parameter, index) {
-					if (parameter === 'H') color[index] = color[index] / 360 * 100;
-					else if (parameter === 'a') color[index] = color[index] / 200 * 100;
-					else if (parameter === 'b') color[index] = color[index] / 200 * 100;
-
-					moveSlider(parameter, color[index]);
+				colorset.forEach(function (parameter) {
+					moveSlider(parameter, currentSlider[name][parameter]);
 				});
 			});
 
@@ -305,7 +301,7 @@ function handleComplete() {
 		}
 
 		function updateInfo() {
-			var color = tinycolor({r: currentSlider.R, g: currentSlider.G, b: currentSlider.B});
+			var color = tinycolor.fromRatio({r: currentSlider.RGB.R, g: currentSlider.RGB.G, b: currentSlider.RGB.B});
 			$('.color-preview-value').text(color.toHexString());
 			$('.color-preview-square').css('background-color', color.toHexString());
 
@@ -315,34 +311,29 @@ function handleComplete() {
 			colorsets.forEach(function (colorset) {
 				var name = colorset.join('');
 
+				var slider = currentSlider[name];
+
 				colorset.forEach(function (parameter, index) {
 					var par = parameter.toLowerCase();
 					var $parameter = $('.color-parameter-wrap[data-parameter=' + parameter + ']');
 					var $slider = $parameter.find('.color-slider-wrapper');
 
-					var color = null;
 					var colorStop = null;
 					var colorStops = [];
-					var rgb = [currentSlider.R, currentSlider.G, currentSlider.B];
 					for (var i = 0; i < 7; i++) {
-						if (name === 'RGB') {
-							colorStop = {r: currentSlider.R, g: currentSlider.G, b: currentSlider.B};
-							colorStop[par] = 255 / 6 * i;
-						} else if (name === 'HSV') {
-							color = colorConvert.rgb.hsv(rgb);
-							if (parameter === 'H') color[0] = 360 / 6 * i;
-							else color[index] = 100 / 6 * i;
-							color = colorConvert.hsv.rgb(color);
-							colorStop = {r: color[0], g: color[1], b: color[2]};
-						} else if (name === 'Lab') {
-							color = colorConvert.rgb.lab(rgb);
-							if (parameter === 'L') color[0] = 100 / 6 * i;
-							else if (parameter === 'a') color[1] = 200 / 6 * i - 100;
-							else if (parameter === 'b') color[2] = 200 / 6 * i - 100;
-							color = colorConvert.lab.rgb(color);
-							colorStop = {r: color[0], g: color[1], b: color[2]};
-						}
-						colorStops.push(colorStop);
+						color = $.extend({}, slider);
+						color[parameter] = 1 / 6 * i;
+
+						color = {
+							RGB: [color.R * 255, color.G * 255,       color.B * 255      ],
+							HSV: [color.H * 360, color.S * 100,       color.V * 100      ],
+							Lab: [color.L * 255, color.a * 200 - 100, color.b * 200 - 100]
+						}[name];
+
+						if (name === 'RGB') colorStop = color;
+						else colorStop = colorConvert[name.toLowerCase()].rgb(color);
+
+						colorStops.push({r: colorStop[0], g: colorStop[1], b: colorStop[2]});
 					}
 
 					$slider.gradient(colorStops);
@@ -352,18 +343,18 @@ function handleComplete() {
 
 		function updateImage() {
 			if (busy) return;
-			if (currentColor.R === currentSlider.R
-			 && currentColor.G === currentSlider.G
-			 && currentColor.B === currentSlider.B) return;
+			if (currentColor.R === currentSlider.RGB.R
+			 && currentColor.G === currentSlider.RGB.G
+			 && currentColor.B === currentSlider.RGB.B) return;
 
 			busy = true;
-			currentColor.R = currentSlider.R;
-			currentColor.G = currentSlider.G;
-			currentColor.B = currentSlider.B;
+			currentColor.R = currentSlider.RGB.R;
+			currentColor.G = currentSlider.RGB.G;
+			currentColor.B = currentSlider.RGB.B;
 			$('#rendering').removeClass('invisible');
 
 			caman.revert(false);
-			caman.translate(info.color, [currentSlider.R, currentSlider.G, currentSlider.B]);
+			caman.translate(info.color, [currentColor.R * 255, currentColor.G * 255, currentColor.B * 255]);
 			caman.render(function () {
 				$('#image').removeClass('invisible');
 				$('#rendering').addClass('invisible');
