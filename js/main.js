@@ -240,11 +240,12 @@ function handleComplete() {
 			});
 		});
 
+		// tab switching
 		$('.tab-inner').click(function () {
 			colorset = $(this).text();
-			$('.colorset-tab').hide();
+			$('.colorset-sliders').hide();
 			$('.tab').removeClass('selected');
-			$('.colorset-tab[data-colorset=' + colorset + ']').show();
+			$('.colorset-sliders[data-colorset=' + colorset + ']').show();
 			$(this).parent('.tab').addClass('selected');
 		});
 

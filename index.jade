@@ -29,12 +29,12 @@ block body
 						.tab-inner HSV
 					li.tab
 						.tab-inner Lab
-				#color-sliders
-					- var colorsets = [['R', 'G', 'B'], ['H', 'S', 'V'], ['L', 'a', 'b']];
-					each colorset in colorsets
-						- var name = colorset.join('');
-						.colorset-tab(id='colorset-tab-'+name, data-colorset=name)
-							.color-slider(id=name+'-slider', data-colorset=name)
+				#panel
+					#color-sliders
+						- var colorsets = [['R', 'G', 'B'], ['H', 'S', 'V'], ['L', 'a', 'b']];
+						each colorset in colorsets
+							- var name = colorset.join('');
+							.colorset-sliders(id='colorset-sliders-'+name, data-colorset=name)
 								each parameter in colorset
 									.color-parameter-wrap(id=name+'-'+parameter, data-parameter=parameter)
 										label.color-parameter-label(id=name+'-'+parameter+'-label')= parameter
@@ -42,10 +42,10 @@ block body
 											.color-slider-wrapper
 												.color-slider-pinch
 										.color-value 0
-							.color-infos
-								.color-preview
-									.color-preview-square
-									.color-preview-value #000000
-								.submit-wrapper
-									.something
-									button.submit OK
+						.color-infos
+							.color-preview
+								.color-preview-square
+								.color-preview-value #000000
+							.submit-wrapper
+								.something
+								button.submit OK

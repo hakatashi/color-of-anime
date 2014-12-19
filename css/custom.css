@@ -212,24 +212,24 @@ h1 {
   background-color: #3b2d94;
   cursor: auto;
 }
-#color-sliders {
+#panel {
   background-color: #4D4D4D;
   border-radius: 15px;
   *zoom: 1;
 }
-#color-sliders:before,
-#color-sliders:after {
+#panel:before,
+#panel:after {
   content: " ";
   display: table;
 }
-#color-sliders:after {
+#panel:after {
   clear: both;
 }
-.colorset-tab {
+.colorset-sliders {
   display: none;
   margin: 10px;
 }
-#colorset-tab-RGB {
+#colorset-sliders-RGB {
   display: block;
 }
 #color-field {
@@ -415,17 +415,11 @@ h1 {
   #color-tabs .tab .tab-inner {
     font-size: 26px;
   }
-  .color-infos {
-    margin: 0 40px 40px;
-  }
-  #color-sliders {
+  #panel {
     position: absolute;
     top: 50px;
     bottom: 0;
     left: 0;
     right: 0;
-  }
-  .color-slider {
-    margin: 20px;
   }
 }
