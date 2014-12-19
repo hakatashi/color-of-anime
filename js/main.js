@@ -50,10 +50,15 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 		var color = colorConvert.rgb.hsv([colorRGB.r, colorRGB.g, colorRGB.b]);
 
 		color[0] = (color[0] + to[0] - from[0] + 360) % 360;
+/*
 		if (color[1] <= from[1]) color[1] = color[1] * to[1] / from[1];
-		else color[1] = 255 - (255 - color[1]) * (255 - to[1]) / (255 - from[1]);
+		else color[1] = 100 - (100 - color[1]) * (100 - to[1]) / (100 - from[1]);
 		if (color[2] <= from[2]) color[2] = color[2] * to[2] / from[2];
-		else color[2] = 255 - (255 - color[2]) * (255 - to[2]) / (255 - from[2]);
+		else color[2] = 100 - (100 - color[2]) * (100 - to[2]) / (100 - from[2]);
+*/
+
+		color[1] = Math.max(0, Math.min(color[1] + to[1] - from[1], 100));
+		color[2] = Math.max(0, Math.min(color[2] + to[2] - from[2], 100));
 
 		var RGB = colorConvert.hsv.rgb(color);
 		colorRGB.r = RGB[0];
@@ -139,7 +144,7 @@ function onResize(event) {
 	}
 }
 
-var currentColor = {R: 0, G: 0, B: 0};
+var currentColor = {R: null, G: null, B: null};
 var currentSlider = {
 	RGB: {R: 0, G: 0, B: 0},
 	HSV: {H: 0, S: 0, V: 0},
