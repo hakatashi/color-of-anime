@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2014-12-19: Created.
+-->
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>
+Created by FontForge 20120731 at Fri Dec 19 10:35:11 2014
+ By hakatashi,,,
+Created by hakatashi,,, with FontForge 2.0 (http://fontforge.sf.net)
+</metadata>
+<defs>
+<font id="Ionicons-subset" horiz-adv-x="448" >
+  <font-face 
+    font-family="Ionicons-subset"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="512"
+    panose-1="2 0 6 9 0 0 0 0 0 0"
+    ascent="448"
+    descent="-64"
+    bbox="-0.254834 -32.151 448 416"
+    underline-thickness="25.6"
+    underline-position="-51.2"
+    unicode-range="U+F29C-F29C"
+  />
+    <missing-glyph />
+    <glyph glyph-name="ion-load-c" unicode="&#xf29c;" 
+d="M448 222c0 -3 0 -6 -1 -9c-4 -8 -15 -12 -23 -7c-4 2 -6 7 -7 11c-1 5 -1 9 -2 14c-4 20 -12 40 -22 58c-12 21 -28 41 -47 56c-18 15 -40 26 -62 33c-21 6 -42 9 -64 9h-4c-3 0 -6 -1 -9 -1c-6 0 -14 -1 -20 -2c-13 -2 -25 -6 -37 -11c-21 -8 -40 -20 -57 -35
+s-31 -33 -42 -52c-12 -22 -20 -45 -24 -70c-2 -11 -2 -23 -2 -34c0 -6 0 -11 1 -16c1 -6 2 -13 3 -19c5 -24 14 -47 28 -67c13 -20 29 -38 48 -52c20 -15 42 -26 65 -33c25 -7 50 -9 76 -7c25 2 50 9 73 20c11 5 22 12 32 19s19 15 27 24c4 4 8 9 12 14s7 10 10 15
+c6 10 12 20 17 31c4 8 8 16 11 25c2 4 3 9 4 13s1 7 2 11c1 -9 1 -18 -1 -26c-1 -5 -2 -11 -4 -16c-1 -5 -3 -10 -5 -15c-4 -10 -8 -19 -13 -28c-6 -11 -12 -21 -20 -30s-16 -18 -25 -26c-18 -15 -40 -27 -62 -36c-23 -9 -48 -14 -73 -15s-51 3 -75 11c-23 7 -45 19 -65 33
+c-19 14 -36 31 -50 50c-7 10 -13 20 -18 31s-9 21 -13 33c-6 18 -9 37 -10 56c-1 20 1 39 5 58c5 24 15 47 28 68c12 19 26 35 42 50s35 27 55 36c23 11 48 19 74 21c10 1 19 1 29 1c13 0 26 -2 38 -4c24 -5 47 -14 68 -26s41 -29 57 -48c15 -18 27 -37 36 -58
+c4 -10 7 -21 10 -32c2 -8 5 -17 6 -26z" />
+  </font>
+</defs></svg>
