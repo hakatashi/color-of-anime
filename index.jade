@@ -23,25 +23,29 @@ block body
 		#color-panel.panel
 			#color-field
 				ul#color-tabs.tabs
-					li.tab
+					li.tab.selected
 						.tab-inner RGB
 					li.tab
 						.tab-inner HSV
 					li.tab
 						.tab-inner Lab
 				#color-sliders
-					.color-slider#RGB-slider(data-colorset='RGB')
-						each parameter in ['R', 'G', 'B']
-							.color-parameter-wrap(id='RGB-'+parameter, data-parameter=parameter)
-								label.color-parameter-label(id='RGB-'+parameter+'-label')= parameter
-								.color-parameter(id='RGB-'+parameter+'-parameter', data-parameter=parameter)
-									.color-slider-wrapper
-										.color-slider-pinch
-								.color-value 0
-					.color-infos
-						.color-preview
-							.color-preview-square
-							.color-preview-value #000000
-						.submit-wrapper
-							.something
-							button.submit OK
+					- var colorsets = [['R', 'G', 'B'], ['H', 'S', 'V'], ['L', 'a', 'b']];
+					each colorset in colorsets
+						- var name = colorset.join('');
+						.colorset-tab(id='colorset-tab-'+name, data-colorset=name)
+							.color-slider(id=name+'-slider', data-colorset=name)
+								each parameter in colorset
+									.color-parameter-wrap(id=name+'-'+parameter, data-parameter=parameter)
+										label.color-parameter-label(id=name+'-'+parameter+'-label')= parameter
+										.color-parameter(id=name+'-'+parameter+'-parameter', data-parameter=parameter)
+											.color-slider-wrapper
+												.color-slider-pinch
+										.color-value 0
+							.color-infos
+								.color-preview
+									.color-preview-square
+									.color-preview-value #000000
+								.submit-wrapper
+									.something
+									button.submit OK

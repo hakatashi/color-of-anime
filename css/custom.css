@@ -206,6 +206,11 @@ h1 {
   color: white;
   text-align: center;
   font-weight: bold;
+  cursor: pointer;
+}
+.tab.selected .tab-inner {
+  background-color: #3b2d94;
+  cursor: auto;
 }
 #color-sliders {
   background-color: #4D4D4D;
@@ -220,11 +225,11 @@ h1 {
 #color-sliders:after {
   clear: both;
 }
-.color-slider {
+.colorset-tab {
   display: none;
   margin: 10px;
 }
-#RGB-slider {
+#colorset-tab-RGB {
   display: block;
 }
 #color-field {
@@ -251,55 +256,6 @@ h1 {
   border-radius: 10px 10px 0 0;
   font-size: 20px;
   line-height: 50px;
-}
-.color-infos {
-  margin: 0 20px 20px;
-  *zoom: 1;
-}
-.color-infos:before,
-.color-infos:after {
-  content: " ";
-  display: table;
-}
-.color-infos:after {
-  clear: both;
-}
-.color-preview {
-  width: 50%;
-  height: 130px;
-  float: left;
-}
-.color-preview-square {
-  width: 100%;
-  height: 100px;
-  border: solid 2px white;
-  border-radius: 3px;
-  background-color: black;
-}
-.color-preview-value {
-  width: 100%;
-  height: 30px;
-  font-size: 24px;
-  line-height: 30px;
-  color: white;
-  text-align: center;
-}
-.submit-wrapper {
-  width: 45%;
-  height: 130px;
-  float: right;
-}
-.something {
-  height: 80px;
-}
-.submit {
-  width: 100%;
-  height: 50px;
-  border: none;
-  border-radius: 5px;
-  font-family: inherit;
-  font-size: 24px;
-  background-color: #EEE;
 }
 .color-parameter-wrap {
   width: 100%;
@@ -365,6 +321,55 @@ h1 {
   line-height: 50px;
   text-align: center;
   color: white;
+}
+.color-infos {
+  margin: 10px;
+  *zoom: 1;
+}
+.color-infos:before,
+.color-infos:after {
+  content: " ";
+  display: table;
+}
+.color-infos:after {
+  clear: both;
+}
+.color-preview {
+  width: 50%;
+  height: 130px;
+  float: left;
+}
+.color-preview-square {
+  width: 100%;
+  height: 100px;
+  border: solid 2px white;
+  border-radius: 3px;
+  background-color: black;
+}
+.color-preview-value {
+  width: 100%;
+  height: 30px;
+  font-size: 24px;
+  line-height: 30px;
+  color: white;
+  text-align: center;
+}
+.submit-wrapper {
+  width: 45%;
+  height: 130px;
+  float: right;
+}
+.something {
+  height: 80px;
+}
+.submit {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 24px;
+  background-color: #EEE;
 }
 @media screen and (min-width: 900px) {
   #image-field {

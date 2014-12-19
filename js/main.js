@@ -133,6 +133,7 @@ function onResize(event) {
 
 var currentColor = {R: 0, G: 0, B: 0};
 var currentSlider = {R: 0, G: 0, B: 0};
+var colorset = 'RGB';
 var caman = null;
 var busy = true;
 
@@ -237,6 +238,14 @@ function handleComplete() {
 					updateInfo();
 				}
 			});
+		});
+
+		$('.tab-inner').click(function () {
+			colorset = $(this).text();
+			$('.colorset-tab').hide();
+			$('.tab').removeClass('selected');
+			$('.colorset-tab[data-colorset=' + colorset + ']').show();
+			$(this).parent('.tab').addClass('selected');
 		});
 
 		function updateSliders() {
