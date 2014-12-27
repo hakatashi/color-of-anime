@@ -43,11 +43,11 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 	if (!Array.isArray(fromRGB)) fromRGB = tinycolorArray(fromRGB);
 	if (!Array.isArray(toRGB)) toRGB = tinycolorArray(toRGB);
 
-	var from = colorConvert.rgb.lab(fromRGB);
-	var to = colorConvert.rgb.lab(toRGB);
+	var from = colorConvert.rgb2labRaw(fromRGB);
+	var to = colorConvert.rgb2labRaw(toRGB);
 
 	this.process('translate', function (colorRGB) {
-		var color = colorConvert.rgb.lab([colorRGB.r, colorRGB.g, colorRGB.b]);
+		var color = colorConvert.rgb2labRaw([colorRGB.r, colorRGB.g, colorRGB.b]);
 
 		color[0] = Math.max(0, color[0] + to[0] - from[0]);
 		color[1] = color[1] + to[1] - from[1];
@@ -63,7 +63,7 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 		if (color[2] <= from[2]) color[2] = color[2] * to[2] / from[2];
 		else color[2] = 100 - (100 - color[2]) * (100 - to[2]) / (100 - from[2]);
 */
-		var RGB = colorConvert.lab.rgb(color);
+		var RGB = colorConvert.lab2rgbRaw(color);
 		colorRGB.r = RGB[0];
 		colorRGB.g = RGB[1];
 		colorRGB.b = RGB[2];
@@ -79,6 +79,37 @@ colorConvert.hsv.lab = function (color) {
 colorConvert.lab.hsv = function (color) {
 	return colorConvert.rgb.hsv(colorConvert.lab.rgb(color));
 };
+
+function nearestColor(color) {
+	var base = tinycolor(color);
+	if (!base._format) return null;
+	var baseRgb = base.toRgb();
+	var baseLab = colorConvert.rgb2labRaw([baseRgb.r, baseRgb.g, baseRgb.b]);
+
+	var nearestDistance = Infinity;
+	var nearestColor = null;
+
+	Object.keys(tinycolor.names).forEach(function (colorname) {
+		var target = tinycolor(colorname).toRgb();
+		var targetLab = colorConvert.rgb2labRaw([target.r, target.g, target.b]);
+
+		var ldiff = targetLab[0] - baseLab[0];
+		var adiff = targetLab[1] - baseLab[1];
+		var bdiff = targetLab[2] - baseLab[2];
+		var distance = Math.sqrt(ldiff * ldiff + adiff * adiff + bdiff * bdiff);
+
+		if (distance < nearestDistance) {
+			nearestDistance = distance;
+			nearestColor = colorname;
+		}
+	});
+
+	return {
+		name: nearestColor,
+		distance: nearestDistance,
+		color: tinycolor(nearestColor)
+	};
+}
 
 function onResize(event) {
 	// fit #image-field to be contained in #image-panel
