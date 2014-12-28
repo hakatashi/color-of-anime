@@ -378,6 +378,13 @@ function handleComplete() {
 					$slider.gradient(colorStops);
 				});
 			});
+
+			// update nearest colorname
+			$('#color-name').text(nearestColor({
+				r: currentSlider.RGB.R * 255,
+				g: currentSlider.RGB.G * 255,
+				b: currentSlider.RGB.B * 255
+			}).name);
 		}
 
 		function updateImage() {
