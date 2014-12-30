@@ -436,6 +436,10 @@ h1 {
 	background-color: #EEE;
 }
 
+#result-field {
+	display: none;
+}
+
 #score-field {
 	width: 100%;
 	padding-top: 10px;
@@ -486,6 +490,58 @@ h1 {
 	background-color: #25CC39;
 
 	.box-shadow(0 0 5px 0 #54F55C);
+}
+
+#result-color {
+	margin: 10px 20px 0;
+}
+
+#result-color-labels {
+	.clearfix;
+}
+
+#result-color-previews {
+	height: 80px;
+	border: solid 2px white;
+	border-radius: 5px;
+	overflow: hidden;
+	.clearfix;
+}
+
+#result-color-infos {
+	.clearfix;
+}
+
+.halfbox {
+	.bare;
+	display: block;
+	width: 50%;
+	height: 100%;
+	float: left;
+}
+
+.result-color-label, .result-color-preview, .result-color-info {
+	.halfbox;
+}
+
+#your-color-preview {
+	background-color: black;
+}
+
+#original-color-preview {
+	background-color: white;
+}
+
+.result-color-label, .result-color-value, .result-color-name {
+	text-align: center;
+	height: 20px;
+	line-height: 20px;
+}
+
+#result-field .submit {
+	display: block;
+	width: 200px;
+	margin: 0 auto 10px;
 }
 
 @media screen and (min-width: 900px) {

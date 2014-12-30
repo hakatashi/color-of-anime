@@ -49,7 +49,7 @@ block body
 							.submit-wrapper
 								#color-name black
 								button.submit OK
-					#result-field.hidden
+					#result-field
 						#score-field
 							#score-text
 								#score-label Score
@@ -57,17 +57,17 @@ block body
 							#score-bar
 								#score-bar-inner
 						#result-color
-							#result-color-label
-								#your-color-label Your Color
-								#correct-color-label Correct Color
+							#result-color-labels
+								#your-color-label.result-color-label Your Color
+								#original-color-label.result-color-label Original Color
 							#result-color-previews
 								#your-color-preview.result-color-preview
-								#correct-color-preview.result-color-preview
+								#original-color-preview.result-color-preview
 							#result-color-infos
 								#your-color-info.result-color-info
 									.result-color-value #000000
 									.result-color-name black
-								#correct-color-info.result-color-info
-									.result-color-value #000000
-									.result-color-name black
+								#original-color-info.result-color-info
+									.result-color-value #ffffff
+									.result-color-name white
 						button.submit OK

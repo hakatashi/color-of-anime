@@ -1190,6 +1190,9 @@ h1 {
   font-size: 24px;
   background-color: #EEE;
 }
+#result-field {
+  display: none;
+}
 #score-field {
   width: 100%;
   padding-top: 10px;
@@ -1227,6 +1230,84 @@ h1 {
   -webkit-box-shadow: 0 0 5px 0 #54f55c;
   -moz-box-shadow: 0 0 5px 0 #54f55c;
   box-shadow: 0 0 5px 0 #54f55c;
+}
+#result-color {
+  margin: 10px 20px 0;
+}
+#result-color-labels {
+  *zoom: 1;
+}
+#result-color-labels:before,
+#result-color-labels:after {
+  content: " ";
+  display: table;
+}
+#result-color-labels:after {
+  clear: both;
+}
+#result-color-previews {
+  height: 80px;
+  border: solid 2px white;
+  border-radius: 5px;
+  overflow: hidden;
+  *zoom: 1;
+}
+#result-color-previews:before,
+#result-color-previews:after {
+  content: " ";
+  display: table;
+}
+#result-color-previews:after {
+  clear: both;
+}
+#result-color-infos {
+  *zoom: 1;
+}
+#result-color-infos:before,
+#result-color-infos:after {
+  content: " ";
+  display: table;
+}
+#result-color-infos:after {
+  clear: both;
+}
+.halfbox {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: block;
+  width: 50%;
+  height: 100%;
+  float: left;
+}
+.result-color-label,
+.result-color-preview,
+.result-color-info {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: block;
+  width: 50%;
+  height: 100%;
+  float: left;
+}
+#your-color-preview {
+  background-color: black;
+}
+#original-color-preview {
+  background-color: white;
+}
+.result-color-label,
+.result-color-value,
+.result-color-name {
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+}
+#result-field .submit {
+  display: block;
+  width: 200px;
+  margin: 0 auto 10px;
 }
 @media screen and (min-width: 900px) {
   #image-field {
