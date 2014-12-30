@@ -213,8 +213,9 @@ h1 {
   cursor: auto;
 }
 #panel {
-  background-color: #4D4D4D;
+  background-color: #4d4d4d;
   border-radius: 15px;
+  color: white;
   *zoom: 1;
 }
 #panel:before,
@@ -375,6 +376,44 @@ h1 {
   font-family: inherit;
   font-size: 24px;
   background-color: #EEE;
+}
+#score-field {
+  width: 100%;
+  padding-top: 10px;
+}
+#score-text {
+  width: 100%;
+}
+#score-label {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 24px;
+  height: 30px;
+  line-height: 30px;
+}
+#score-numeral {
+  font-size: 96px;
+  text-align: center;
+  height: 90px;
+  line-height: 80px;
+}
+#score-bar {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+}
+#score-bar-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 100%;
+  background-color: #25CC39;
+  -webkit-box-shadow: 0 0 5px 0 #54f55c;
+  -moz-box-shadow: 0 0 5px 0 #54f55c;
+  box-shadow: 0 0 5px 0 #54f55c;
 }
 @media screen and (min-width: 900px) {
   #image-field {

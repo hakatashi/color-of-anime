@@ -110,6 +110,12 @@
 	}
 }
 
+.box-shadow(@box-shadow) {
+	-webkit-box-shadow: @box-shadow;
+	-moz-box-shadow: @box-shadow;
+	box-shadow: @box-shadow;
+}
+
 // fontface
 
 @font-face {
@@ -241,9 +247,12 @@ h1 {
 	}
 }
 
+@panel-color: #4D4D4D;
+
 #panel {
-	background-color: #4D4D4D;
+	background-color: @panel-color;
 	border-radius: 15px;
+	color: white;
 
 	.clearfix;
 }
@@ -425,6 +434,58 @@ h1 {
 	font-family: inherit;
 	font-size: 24px;
 	background-color: #EEE;
+}
+
+#score-field {
+	width: 100%;
+	padding-top: 10px;
+}
+
+#score-text {
+	width: 100%;
+}
+
+#score-label {
+	text-align: center;
+	text-transform: uppercase;
+
+	font-weight: bold;
+	font-size: 24px;
+
+	height: 30px;
+	line-height: 30px;
+}
+
+#score-numeral {
+	font-size: 96px;
+	text-align: center;
+
+	height: 90px;
+	line-height: 80px;
+}
+
+@score-bar-height: 3px;
+
+#score-bar {
+	position: relative;
+
+	width: 100%;
+	height: @score-bar-height;
+
+	background-color: white;
+}
+
+#score-bar-inner {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	width: 80%;
+	height: 100%;
+
+	background-color: #25CC39;
+
+	.box-shadow(0 0 5px 0 #54F55C);
 }
 
 @media screen and (min-width: 900px) {
