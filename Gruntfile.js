@@ -8,13 +8,14 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		concat: {
+		cssmin: {
 			options: {
-				separator: '\n'
+				report: 'gzip'
 			},
 			css: {
-				src: ['css/normalize.css', 'css/main.css', 'css/custom.css'],
-				dest: 'css/style.css'
+				files: {
+					'css/style.css': ['css/normalize.css', 'css/main.css', 'css/custom.css']
+				}
 			}
 		},
 		jade: {
@@ -46,9 +47,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	grunt.registerTask('default', ['compile', 'watch']);
 	grunt.registerTask('compile', ['compile:css', 'compile:html']);
-	grunt.registerTask('compile:css', ['less', 'concat']);
+	grunt.registerTask('compile:css', ['less', 'cssmin']);
 	grunt.registerTask('compile:html', ['jade']);
 };

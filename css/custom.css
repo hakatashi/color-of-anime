@@ -1,3 +1,4 @@
+/*! color-of-anime | MIT License | http://hakatashi.github.io/color-of-anime/ */
 @keyframes rotation {
   from {
     -webkit-transform: rotate(0deg);
@@ -65,18 +66,6 @@
   -o-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
 }
-.square {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-.square:before {
-  content: "";
-  display: block;
-  margin-top: 100%;
-}
 .bare {
   display: block;
   margin: 0;
@@ -84,7 +73,7 @@
   list-style-type: none;
 }
 .clearfix {
-  *zoom: 1;
+  zoom: 1;
 }
 .clearfix:before,
 .clearfix:after {
@@ -216,7 +205,7 @@ h1 {
   background-color: #4d4d4d;
   border-radius: 15px;
   color: white;
-  *zoom: 1;
+  zoom: 1;
 }
 #panel:before,
 #panel:after {
@@ -325,7 +314,7 @@ h1 {
 }
 .color-infos {
   margin: 20px;
-  *zoom: 1;
+  zoom: 1;
 }
 .color-infos:before,
 .color-infos:after {
@@ -422,7 +411,7 @@ h1 {
   margin: 10px 20px 0;
 }
 #result-color-labels {
-  *zoom: 1;
+  zoom: 1;
 }
 #result-color-labels:before,
 #result-color-labels:after {
@@ -437,7 +426,7 @@ h1 {
   border: solid 2px white;
   border-radius: 5px;
   overflow: hidden;
-  *zoom: 1;
+  zoom: 1;
 }
 #result-color-previews:before,
 #result-color-previews:after {
@@ -448,7 +437,7 @@ h1 {
   clear: both;
 }
 #result-color-infos {
-  *zoom: 1;
+  zoom: 1;
 }
 #result-color-infos:before,
 #result-color-infos:after {

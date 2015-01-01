@@ -1,3 +1,5 @@
+/*! color-of-anime | MIT License | http://hakatashi.github.io/color-of-anime/ */
+
 // utils
 
 .transform(@transform) {
@@ -76,20 +78,6 @@
 	.transform(translateX(-50%) translateY(-50%));
 }
 
-.square {
-	&:before {
-		content: "";
-		display: block;
-		margin-top: 100%;
-	}
-
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
 .bare {
 	display: block;
 	margin: 0;
@@ -98,7 +86,7 @@
 }
 
 .clearfix {
-	*zoom: 1;
+	zoom: 1;
 
 	&:before, &:after {
 		content: " ";
