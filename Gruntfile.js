@@ -9,9 +9,6 @@ module.exports = function (grunt) {
 			}
 		},
 		cssmin: {
-			options: {
-				report: 'gzip'
-			},
 			css: {
 				files: {
 					'css/style.css': ['css/normalize.css', 'css/main.css', 'css/custom.css']
