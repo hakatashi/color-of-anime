@@ -309,6 +309,9 @@ function handleComplete() {
 			$(this).parent('.tab').addClass('selected');
 		});
 
+		// result submission
+		$('.submit').click(submitResult);
+
 		function updateSliders(base) {
 			var slider = currentSlider[base];
 			var baseColor = {
@@ -407,6 +410,13 @@ function handleComplete() {
 
 				busy = false;
 				updateImage();
+			});
+		}
+
+		function submitResult() {
+			$('#color-sliders').fadeOut(function () {
+				console.log('hi');
+				$('#result-field').fadeIn();
 			});
 		}
 	});
