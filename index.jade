@@ -19,7 +19,7 @@ block body
 	h1 Color of Anime
 	#container
 		#image-panel.panel
-			#rendering 
+			#rendering
 				= ' '
 				+en('Rendering...')
 				+ja('レンダリング中…')
@@ -58,12 +58,14 @@ block body
 								.color-preview-square
 								.color-preview-value #000000
 							.submit-wrapper
-								#color-name black
+								#color-name
 								button.submit OK
 					#result-field
 						#score-field
 							#score-text
-								#score-label Score
+								#score-label
+									+en('Score')
+									+ja('スコア')
 								#score-numeral 0
 							#score-bar
 								#score-bar-inner

@@ -80,23 +80,29 @@ colorConvert.lab.hsv = function (color) {
 	return colorConvert.rgb.hsv(colorConvert.lab.rgb(color));
 };
 
+function distanceBetweenColors(A, B) {
+	var colorA = tinycolor(A).toRgb();
+	var ALab = colorConvert.rgb2labRaw([colorA.r, colorA.g, colorA.b]);
+	var colorB = tinycolor(B).toRgb();
+	var BLab = colorConvert.rgb2labRaw([colorB.r, colorB.g, colorB.b]);
+
+	var ldiff = ALab[0] - BLab[0];
+	var adiff = ALab[1] - BLab[1];
+	var bdiff = ALab[2] - BLab[2];
+	var distance = Math.sqrt(ldiff * ldiff + adiff * adiff + bdiff * bdiff);
+
+	return distance;
+}
+
 function nearestColor(color) {
 	var base = tinycolor(color);
 	if (!base._format) return null;
-	var baseRgb = base.toRgb();
-	var baseLab = colorConvert.rgb2labRaw([baseRgb.r, baseRgb.g, baseRgb.b]);
 
 	var nearestDistance = Infinity;
 	var nearestColor = null;
 
 	Object.keys(tinycolor.names).forEach(function (colorname) {
-		var target = tinycolor(colorname).toRgb();
-		var targetLab = colorConvert.rgb2labRaw([target.r, target.g, target.b]);
-
-		var ldiff = targetLab[0] - baseLab[0];
-		var adiff = targetLab[1] - baseLab[1];
-		var bdiff = targetLab[2] - baseLab[2];
-		var distance = Math.sqrt(ldiff * ldiff + adiff * adiff + bdiff * bdiff);
+		var distance = distanceBetweenColors(color, colorname);
 
 		if (distance < nearestDistance) {
 			nearestDistance = distance;
@@ -109,6 +115,20 @@ function nearestColor(color) {
 		distance: nearestDistance,
 		color: tinycolor(nearestColor)
 	};
+}
+
+// Returns score from 0.0 to 1.0
+function colorScore(colorA, colorB) {
+	var SIGMA = 20; // How much score will be lowered with distance aparted from correct color
+	var TOLERANCE = 0.01; // How the score will be tolerated to get full score
+	var distance = distanceBetweenColors(colorA, colorB);
+	var score = Math.min(Math.exp(- (distance / SIGMA) * (distance / SIGMA)) * (1 + TOLERANCE), 1);
+	return score;
+}
+
+// Returns score from 0 to 100
+function colorScoreInt(colorA, colorB) {
+	return Math.floor(colorScore(colorA, colorB) * 100);
 }
 
 function onResize(event) {
@@ -388,12 +408,14 @@ function handleComplete() {
 				});
 			});
 
-			// update nearest colorname
+			// update nearest colorname (disabled)
+			/*
 			$('#color-name').text(nearestColor({
 				r: currentSlider.RGB.R * 255,
 				g: currentSlider.RGB.G * 255,
 				b: currentSlider.RGB.B * 255
 			}).name);
+			*/
 		}
 
 		function updateImage() {
@@ -426,6 +448,13 @@ function handleComplete() {
 			});
 			$('#your-color-info .result-color-value').text(color.toHexString());
 			$('#your-color-info .result-color-name').text(nearestColor(color).name);
+			var score = colorScoreInt({
+				r: currentSlider.RGB.R * 255,
+				g: currentSlider.RGB.G * 255,
+				b: currentSlider.RGB.B * 255
+			}, originalColor);
+			$('#score-numeral').text(score);
+			$('#score-bar-inner').css({width: score + '%'})
 			$('#color-sliders').fadeOut(function () {
 				$('#result-field').fadeIn();
 			});
