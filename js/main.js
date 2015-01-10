@@ -119,6 +119,7 @@ function nearestColor(color) {
 
 // Returns score from 0.0 to 1.0
 function colorScore(colorA, colorB) {
+	// currently uses evaluation by Gaussian function
 	var SIGMA = 20; // How much score will be lowered with distance aparted from correct color
 	var TOLERANCE = 0.01; // How the score will be tolerated to get full score
 	var distance = distanceBetweenColors(colorA, colorB);
