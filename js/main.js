@@ -200,6 +200,7 @@ function handleComplete() {
 		var info = queue.getResult('syaro.info');
 
 		var defaultColor = tinycolor(info.default);
+		var originalColor = tinycolor(info.color);
 		var initColor = null;
 		var rgb = null;
 
@@ -212,7 +213,12 @@ function handleComplete() {
 		currentSlider.RGB = {R: rgb.r / 255, G: rgb.g / 255, B: rgb.b / 255};
 		updateSliders('RGB');
 
-		var timer = new Date();
+		$('#original-color-preview').css({
+			'background-color': originalColor.toHexString()
+		});
+		$('#original-color-info .result-color-value').text(originalColor.toHexString());
+		$('#original-color-info .result-color-name').text(nearestColor(originalColor).name);
+
 		caman = Caman('#canvas', 'img/syaro/color.png', function () {
 			busy = false;
 			updateImage();
@@ -414,8 +420,13 @@ function handleComplete() {
 		}
 
 		function submitResult() {
+			var color = tinycolor.fromRatio({r: currentSlider.RGB.R, g: currentSlider.RGB.G, b: currentSlider.RGB.B});
+			$('#your-color-preview').css({
+				'background-color': color.toHexString()
+			});
+			$('#your-color-info .result-color-value').text(color.toHexString());
+			$('#your-color-info .result-color-name').text(nearestColor(color).name);
 			$('#color-sliders').fadeOut(function () {
-				console.log('hi');
 				$('#result-field').fadeIn();
 			});
 		}
