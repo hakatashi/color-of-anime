@@ -52,7 +52,7 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 		color[0] = Math.max(0, color[0] + to[0] - from[0]);
 		color[1] = color[1] + to[1] - from[1];
 		color[2] = color[2] + to[2] - from[2];
-/*
+		/*
 		color[0] = (color[0] + to[0] - from[0] + 360) % 360;
 
 		color[1] = Math.max(0, Math.min(color[1] + to[1] - from[1], 100));
@@ -62,7 +62,7 @@ Caman.Filter.register('translate', function (fromRGB, toRGB) {
 		else color[1] = 100 - (100 - color[1]) * (100 - to[1]) / (100 - from[1]);
 		if (color[2] <= from[2]) color[2] = color[2] * to[2] / from[2];
 		else color[2] = 100 - (100 - color[2]) * (100 - to[2]) / (100 - from[2]);
-*/
+		*/
 		var RGB = colorConvert.lab2rgbRaw(color);
 		colorRGB.r = RGB[0];
 		colorRGB.g = RGB[1];
