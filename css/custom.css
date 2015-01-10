@@ -113,6 +113,18 @@ h1 {
     height: 70px;
   }
 }
+.text-ja {
+  display: none;
+}
+html.lang-ja .text-ja {
+  display: inline;
+}
+.text-en {
+  display: none;
+}
+html.lang-en .text-en {
+  display: inline;
+}
 #container {
   position: relative;
   width: 96%;
@@ -466,6 +478,9 @@ h1 {
   width: 50%;
   height: 100%;
   float: left;
+}
+.result-color-preview {
+  cursor: pointer;
 }
 #your-color-preview {
   background-color: black;

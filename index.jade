@@ -1,5 +1,11 @@
 extends ./layout.jade
 
+mixin en(text)
+	span.text-en(lang='en')= text
+
+mixin ja(text)
+	span.text-ja(lang='ja')= text
+
 block head
 	title Color of Anime
 	link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Lato:300,700,900')
@@ -13,12 +19,17 @@ block body
 	h1 Color of Anime
 	#container
 		#image-panel.panel
-			#rendering  Rendering...
+			#rendering 
+				= ' '
+				+en('Rendering...')
+				+ja('レンダリング中…')
 			#image-field
 				#image.invisible
 					canvas#canvas(width='400', height='400')
 			#image-info
-				| 桐間紗路(ご注文はうさぎですか?) - 
+				+en('Sharo Kirima(Is The Order a Rabbit?)')
+				+ja('桐間紗路(ご注文はうさぎですか?)')
+				= ' - '
 				a(href='http://www.gochiusa.com/news/hp0001/index00040000.html', target='_blank') Color Source
 		#color-panel.panel
 			#color-field
@@ -58,8 +69,12 @@ block body
 								#score-bar-inner
 						#result-color
 							#result-color-labels
-								#your-color-label.result-color-label Your Color
-								#original-color-label.result-color-label Original Color
+								#your-color-label.result-color-label
+									+en('Your Color')
+									+ja('あなたの回答')
+								#original-color-label.result-color-label
+									+en('Original Color')
+									+ja('正しい色')
 							#result-color-previews
 								#your-color-preview.result-color-preview
 								#original-color-preview.result-color-preview

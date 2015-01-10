@@ -144,6 +144,19 @@ h1 {
 	}
 }
 
+@languages: 'en', 'ja';
+
+.-(@i: length(@languages)) when (@i > 0) {
+	@name: e(extract(@languages, @i));
+	.text-@{name} {
+		display: none;
+	}
+	html.lang-@{name} .text-@{name} {
+		display: inline;
+	}
+	.-((@i - 1));
+} .-;
+
 #container {
 	position: relative;
 
@@ -510,6 +523,10 @@ h1 {
 
 .result-color-label, .result-color-preview, .result-color-info {
 	.halfbox;
+}
+
+.result-color-preview {
+	cursor: pointer;
 }
 
 #your-color-preview {
