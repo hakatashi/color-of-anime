@@ -21,6 +21,7 @@
     }
 }());
 
+// Set gradient background across browsers
 (function ($) {
     $.fn.gradient = function (colors) {
         colors = colors || ['black', 'white'];
@@ -75,6 +76,7 @@
     };
 })(jQuery);
 
+// Select all text in contenteditable div
 // http://stackoverflow.com/questions/12243898/
 (function ($) {
     $.fn.selectText = function () {

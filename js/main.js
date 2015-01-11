@@ -454,9 +454,18 @@ function handleComplete() {
 				g: currentSlider.RGB.G * 255,
 				b: currentSlider.RGB.B * 255
 			}, originalColor);
-			$('#score-numeral').text(score);
-			$('#score-bar-inner').css({width: score + '%'})
+
 			$('#color-sliders').fadeOut(function () {
+				$({score: 0}).animate({score: score}, {
+					step: function (currentScore) {
+						var scoreInt = Math.floor(currentScore);
+						$('#score-numeral').text(scoreInt);
+						$('#score-bar-inner').css({width: scoreInt + '%'});
+					},
+					duration: score * 30,
+					easing: 'linear'
+				});
+
 				$('#result-field').fadeIn();
 			});
 		}
