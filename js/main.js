@@ -86,7 +86,7 @@ function distanceBetweenColors(A, B) {
 	var colorB = tinycolor(B).toRgb();
 	var BLab = colorConvert.rgb2labRaw([colorB.r, colorB.g, colorB.b]);
 
-	var ldiff = ALab[0] - BLab[0];
+	var ldiff = (ALab[0] - BLab[0]) * 2;
 	var adiff = ALab[1] - BLab[1];
 	var bdiff = ALab[2] - BLab[2];
 	var distance = Math.sqrt(ldiff * ldiff + adiff * adiff + bdiff * bdiff);
@@ -120,8 +120,8 @@ function nearestColor(color) {
 // Returns score from 0.0 to 1.0
 function colorScore(colorA, colorB) {
 	// currently uses evaluation by Gaussian function
-	var SIGMA = 20; // How much score will be lowered with distance aparted from correct color
-	var TOLERANCE = 0.01; // How the score will be tolerated to get full score
+	var SIGMA = 30; // How much score will be lowered with distance aparted from correct color
+	var TOLERANCE = 0.02; // How the score will be tolerated to get full score
 	var distance = distanceBetweenColors(colorA, colorB);
 	var score = Math.min(Math.exp(- (distance / SIGMA) * (distance / SIGMA)) * (1 + TOLERANCE), 1);
 	return score;
