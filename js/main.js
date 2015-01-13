@@ -387,7 +387,10 @@ function handleComplete() {
 			$('.color-preview-value').text(color.toHexString());
 			$('.color-preview-square').css('background-color', color.toHexString());
 
-			location.replace(color.toHexString());
+			if (phase === 'slider') {
+				location.replace(color.toHexString());
+				yourColor = $.extend({}, currentSlider.RGB);
+			}
 
 			// update sliders gradients
 			colorsets.forEach(function (colorset) {
@@ -421,8 +424,6 @@ function handleComplete() {
 					$slider.gradient(colorStops);
 				});
 			});
-
-			if (phase === 'slider') yourColor = $.extend({}, currentSlider.RGB);
 
 			// update nearest colorname (disabled)
 			/*
