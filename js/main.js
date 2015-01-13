@@ -332,11 +332,13 @@ function handleComplete() {
 
 		// tab switching
 		$('.tab-inner').click(function () {
-			colorset = $(this).text();
-			$('.colorset-sliders').hide();
-			$('.tab').removeClass('selected');
-			$('.colorset-sliders[data-colorset=' + colorset + ']').show();
-			$(this).parent('.tab').addClass('selected');
+			if (phase === 'slider') {
+				colorset = $(this).text();
+				$('.colorset-sliders').hide();
+				$('.tab').removeClass('selected');
+				$('.colorset-sliders[data-colorset=' + colorset + ']').show();
+				$(this).parent('.tab').addClass('selected');
+			}
 		});
 
 		// result submission
