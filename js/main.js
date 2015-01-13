@@ -200,6 +200,7 @@ function onResize(event) {
 }
 
 var currentColor = {R: null, G: null, B: null};
+var yourColor = {R: null, G: null, B: null};
 var currentSlider = {
 	RGB: {R: 0, G: 0, B: 0},
 	HSV: {H: 0, S: 0, V: 0},
@@ -224,6 +225,8 @@ function handleComplete() {
 		var originalColor = tinycolor(info.color);
 		var initColor = null;
 		var rgb = null;
+
+		var phase = 'slider';
 
 		if (location.hash && (initColor = tinycolor(location.hash))._format) {
 			rgb = initColor.toRgb();
@@ -339,6 +342,14 @@ function handleComplete() {
 		// result submission
 		$('.submit').click(submitResult);
 
+		$('#your-color-preview').click(function () {
+			previewResult(true);
+		});
+
+		$('#original-color-preview').click(function () {
+			previewResult(false);
+		});
+
 		function updateSliders(base) {
 			var slider = currentSlider[base];
 			var baseColor = {
@@ -409,6 +420,8 @@ function handleComplete() {
 				});
 			});
 
+			if (phase === 'slider') yourColor = $.extend({}, currentSlider.RGB);
+
 			// update nearest colorname (disabled)
 			/*
 			$('#color-name').text(nearestColor({
@@ -468,6 +481,22 @@ function handleComplete() {
 
 				$('#result-field').fadeIn();
 			});
+
+			phase = 'result';
+		}
+
+		function previewResult(isYourColor) {
+			var color = null;
+
+			if (isYourColor) {
+				currentSlider.RGB = $.extend({}, yourColor);
+			} else {
+				var rgb = originalColor.toRgb();
+				currentSlider.RGB = {R: rgb.r / 255, G: rgb.g / 255, B: rgb.b / 255};
+			}
+
+			updateSliders('RGB');
+			updateImage();
 		}
 	});
 }
