@@ -1,5 +1,5 @@
 (function() {
-  var Game, Question, characters, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, getX, manifest, nearestColor, onResize, percentageToRealValue, queue, realValueArrayToColorset, realValueToPercentage, tinycolorArray;
+  var Game, Question, characters, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, getX, manifest, nearestColor, percentageToRealValue, queue, realValueArrayToColorset, realValueToPercentage, tinycolorArray;
 
   Caman.Filter.register('translate', function(fromRGB, toRGB) {
     var from, to;
@@ -78,64 +78,6 @@
 
   colorScoreInt = function(colorA, colorB) {
     return Math.floor(colorScore(colorA, colorB) * 100);
-  };
-
-  onResize = function(event) {
-    var IMAGEINFO_HEIGHT, RENDERING_HEIGHT, boxHeight, boxWidth, fieldHeight, fieldWidth, imageHeight, imageTop, imageWidth, zoom;
-    RENDERING_HEIGHT = 40;
-    IMAGEINFO_HEIGHT = 30;
-    imageHeight = queue.getResult('syaro.base').originalHeight;
-    imageWidth = queue.getResult('syaro.base').originalWidth;
-    boxWidth = $('#image-panel').width() * 0.9;
-    boxHeight = null;
-    if (matchMedia('(min-width: 900px)').matches) {
-      boxHeight = $('#image-panel').height() - RENDERING_HEIGHT - IMAGEINFO_HEIGHT;
-    } else {
-      boxHeight = 800;
-    }
-    zoom = Math.min(boxWidth / imageWidth, boxHeight / imageHeight);
-    fieldWidth = imageWidth * zoom;
-    fieldHeight = imageHeight * zoom;
-    $('#image-field').css({
-      width: fieldWidth,
-      height: fieldHeight,
-      '-webkit-transform': 'none',
-      '-moz-transform': 'none',
-      '-o-transform': 'none',
-      transform: 'none'
-    });
-    if (matchMedia('(min-width: 900px)').matches) {
-      imageTop = ($('#image-panel').height() - fieldHeight) / 2;
-      $('#image-field').css({
-        position: 'absolute',
-        top: imageTop,
-        left: ($('#image-panel').width() - fieldWidth) / 2,
-        margin: '0'
-      });
-      $('#rendering').css({
-        position: 'absolute',
-        bottom: imageTop + fieldHeight
-      });
-      $('#image-info').css({
-        position: 'absolute',
-        top: imageTop + fieldHeight
-      });
-    } else {
-      $('#image-field').css({
-        position: 'relative',
-        top: 0,
-        left: 0,
-        margin: '0 5%'
-      });
-      $('#rendering').css({
-        position: 'relative',
-        bottom: 0
-      });
-      $('#image-info').css({
-        position: 'relative',
-        top: 0
-      });
-    }
   };
 
   getX = function(event) {
@@ -328,6 +270,23 @@
       return this.phase = 'result';
     };
 
+    Question.prototype.setColor = function(input) {
+      var color, rgb;
+      color = tinycolor(input);
+      if (color._format) {
+        rgb = color.toRgb();
+        this.currentSliderColor.RGB = {
+          r: rgb.r / 255,
+          g: rgb.g / 255,
+          b: rgb.b / 255
+        };
+        this.updateSliders('RGB');
+        return this.updateImage();
+      } else {
+        return this.updateInfo();
+      }
+    };
+
     Question.prototype.previewResult = function(isYourColor) {
       var rgb;
       if (isYourColor) {
@@ -351,8 +310,8 @@
   Game = (function() {
     function Game() {
       this.currentQuestion = new Question(this, 'syaro');
-      $(window).resize(onResize);
-      onResize();
+      $(window).resize(this.onResize);
+      this.onResize();
       $('.color-parameter').on('touchstart mousedown', (function(_this) {
         return function(event) {
           var colorset, movePinch, offset, parameter, touchX, width;
@@ -391,22 +350,9 @@
             }
           });
           return $(event.currentTarget).on('blur', function(event) {
-            var newColor, rgb;
             $(event.currentTarget).attr('contenteditable', false);
             $(event.currentTarget).off('keypress blur');
-            newColor = tinycolor($(event.currentTarget).text());
-            if (newColor._format) {
-              rgb = newColor.toRgb();
-              _this.currentQuestion.currentSliderColor.RGB = {
-                R: rgb.r / 255,
-                G: rgb.g / 255,
-                B: rgb.b / 255
-              };
-              _this.currentQuestion.updateSliders('RGB');
-              return _this.currentQuestion.updateImage();
-            } else {
-              return _this.currentQuestion.updateInfo();
-            }
+            return _this.currentQuestion.setColor($(event.currentTarget).text());
           });
         };
       })(this));

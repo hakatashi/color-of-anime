@@ -76,63 +76,6 @@ colorScore = (colorA, colorB) ->
 colorScoreInt = (colorA, colorB) ->
 	Math.floor colorScore(colorA, colorB) * 100
 
-onResize = (event) ->
-	# fit #image-field to be contained in #image-panel
-	# 'box' means max acceptable size of #image-panel in #image-field.
-	RENDERING_HEIGHT = 40
-	IMAGEINFO_HEIGHT = 30
-	imageHeight = queue.getResult('syaro.base').originalHeight
-	imageWidth = queue.getResult('syaro.base').originalWidth
-	boxWidth = $('#image-panel').width() * 0.9
-	boxHeight = null
-	if matchMedia('(min-width: 900px)').matches
-		boxHeight = $('#image-panel').height() - RENDERING_HEIGHT - IMAGEINFO_HEIGHT
-	else
-		boxHeight = 800
-	zoom = Math.min(boxWidth / imageWidth, boxHeight / imageHeight)
-	fieldWidth = imageWidth * zoom
-	fieldHeight = imageHeight * zoom
-	$('#image-field').css
-		width: fieldWidth
-		height: fieldHeight
-		'-webkit-transform': 'none'
-		'-moz-transform': 'none'
-		'-o-transform': 'none'
-		transform: 'none'
-
-	if matchMedia('(min-width: 900px)').matches
-		imageTop = ($('#image-panel').height() - fieldHeight) / 2
-		$('#image-field').css
-			position: 'absolute'
-			top: imageTop
-			left: ($('#image-panel').width() - fieldWidth) / 2
-			margin: '0'
-
-		$('#rendering').css
-			position: 'absolute'
-			bottom: imageTop + fieldHeight
-
-		$('#image-info').css
-			position: 'absolute'
-			top: imageTop + fieldHeight
-
-	else
-		$('#image-field').css
-			position: 'relative'
-			top: 0
-			left: 0
-			margin: '0 5%'
-
-		$('#rendering').css
-			position: 'relative'
-			bottom: 0
-
-		$('#image-info').css
-			position: 'relative'
-			top: 0
-
-	return
-
 # get x coordinary from touch or click event
 getX = (event) ->
 	if event.originalEvent.changedTouches
@@ -231,9 +174,9 @@ class Question
 				i = 0
 
 				while i < 7
-					color = $.extend({}, sliderColor)
+					color = $.extend {}, sliderColor
 					color[parameter] = 1 / 6 * i
-					colorArray = colorsetToRealValueArray(colorset, color)
+					colorArray = colorsetToRealValueArray colorset, color
 					if colorset is 'RGB'
 						colorStop = colorArray
 					else
@@ -242,8 +185,8 @@ class Question
 						r: colorStop[0]
 						g: colorStop[1]
 						b: colorStop[2]
-
 					i++
+
 				$slider.gradient colorStops
 
 	# update image based on current slider color
@@ -276,10 +219,23 @@ class Question
 					$('#score-bar-inner').css width: scoreInt + '%'
 				duration: @score * 30
 				easing: 'linear'
-
 			$('#result-field').fadeIn()
 
 		@phase = 'result'
+
+	# set color by tinycolor input
+	setColor: (input) ->
+		color = tinycolor input
+		if color._format
+			rgb = color.toRgb()
+			@currentSliderColor.RGB =
+				r: rgb.r / 255
+				g: rgb.g / 255
+				b: rgb.b / 255
+			@updateSliders 'RGB'
+			@updateImage()
+		else
+			@updateInfo()
 
 	# preview colors in image on result page
 	previewResult: (isYourColor) ->
@@ -299,8 +255,8 @@ class Game
 		@currentQuestion = new Question @, 'syaro'
 
 		# fire onResize event
-		$(window).resize onResize
-		onResize()
+		$(window).resize @onResize
+		@onResize()
 
 		# DOM binders
 
@@ -340,17 +296,7 @@ class Game
 			$(event.currentTarget).on 'blur', (event) =>
 				$(event.currentTarget).attr 'contenteditable', false
 				$(event.currentTarget).off 'keypress blur'
-				newColor = tinycolor($(event.currentTarget).text())
-				if newColor._format
-					rgb = newColor.toRgb()
-					@currentQuestion.currentSliderColor.RGB =
-						R: rgb.r / 255
-						G: rgb.g / 255
-						B: rgb.b / 255
-					@currentQuestion.updateSliders 'RGB'
-					@currentQuestion.updateImage()
-				else
-					@currentQuestion.updateInfo()
+				@currentQuestion.setColor $(event.currentTarget).text()
 
 		$('.tab-inner').on 'click', (event) =>
 			if @currentQuestion.phase is 'slider'

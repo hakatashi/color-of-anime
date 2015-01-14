@@ -35,7 +35,8 @@ module.exports = function (grunt) {
 				tasks: ['compile:html']
 			},
 			js: {
-				files: ['**/*.js', '**/*.coffee']
+				files: ['**/*.js', '**/*.coffee'],
+				tasks: ['compile:js']
 			}
 		},
 		coffee: {
