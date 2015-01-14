@@ -42,14 +42,13 @@ block body
 						.tab-inner Lab
 				#panel
 					#color-sliders
-						- var colorsets = [['R', 'G', 'B'], ['H', 'S', 'V'], ['L', 'a', 'b']];
-						each colorset in colorsets
-							- var name = colorset.join('');
-							.colorset-sliders(id='colorset-sliders-'+name, data-colorset=name)
-								each parameter in colorset
-									.color-parameter-wrap(id=name+'-'+parameter, data-parameter=parameter)
-										label.color-parameter-label(id=name+'-'+parameter+'-label')= parameter
-										.color-parameter(id=name+'-'+parameter+'-parameter', data-colorset=name, data-parameter=parameter)
+						- var colorsets = {RGB: ['r', 'g', 'b'], HSV: ['h', 's', 'v'], Lab: ['l', 'a', 'b']};
+						each colorset in Object.keys(colorsets)
+							.colorset-sliders(id='colorset-sliders-'+colorset, data-colorset=colorset)
+								each parameter in colorsets[colorset]
+									.color-parameter-wrap(id=colorset+'-'+parameter, data-colorset=colorset, data-parameter=parameter)
+										label.color-parameter-label(id=colorset+'-'+parameter+'-label')= parameter
+										.color-parameter(id=colorset+'-'+parameter+'-parameter', data-colorset=colorset, data-parameter=parameter)
 											.color-slider-wrapper
 												.color-slider-pinch
 										.color-value 0
