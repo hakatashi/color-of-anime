@@ -20,12 +20,6 @@ Caman.Filter.register 'translate', (fromRGB, toRGB) ->
 		colorRGB.b = RGB[2]
 		colorRGB
 
-colorConvert.hsv.lab = (color) ->
-	colorConvert.rgb.lab colorConvert.hsv.rgb(color)
-
-colorConvert.lab.hsv = (color) ->
-	colorConvert.rgb.hsv colorConvert.lab.rgb(color)
-
 distanceBetweenColors = (A, B) ->
 	colorA = tinycolor(A).toRgb()
 	ALab = colorConvert.rgb2labRaw([
@@ -83,9 +77,80 @@ getX = (event) ->
 	else
 		event.originalEvent.pageX
 
+percentageToRealValue = (colorset, parameter, value) ->
+	{
+		RGB: {
+			r: value * 255,
+			g: value * 255,
+			b: value * 255
+		},
+		HSV: {
+			h: value * 360,
+			s: value * 100,
+			v: value * 100
+		},
+		Lab: {
+			l: value * 100,
+			a: value * 200 - 100,
+			b: value * 200 - 100
+		}
+	}[colorset][parameter]
+
+colorsetToRealValueArray = (colorset, values) ->
+	parameters = {
+		RGB: ['r', 'g', 'b'],
+		HSV: ['h', 's', 'v'],
+		Lab: ['l', 'a', 'b']
+	}[colorset]
+
+	ret = []
+	parameters.forEach (parameter) ->
+		ret.push percentageToRealValue(colorset, parameter, values[parameter])
+		return
+	ret
+
+realValueToPercentage = (colorset, parameter, value) ->
+	{
+		RGB: {
+			r: value / 255,
+			g: value / 255,
+			b: value / 255
+		},
+		HSV: {
+			h: value / 360,
+			s: value / 100,
+			v: value / 100
+		},
+		Lab: {
+			l: value / 100,
+			a: (value + 100) / 200,
+			b: (value + 100) / 200
+		}
+	}[colorset][parameter]
+
+realValueArrayToColorset = (colorset, values) ->
+	parameters = {
+		RGB: ['r', 'g', 'b'],
+		HSV: ['h', 's', 'v'],
+		Lab: ['l', 'a', 'b']
+	}[colorset]
+
+	ret = {}
+	i = 0
+	parameters.forEach (parameter) ->
+		ret[parameter] = realValueToPercentage(colorset, parameter, values[i])
+		i++
+		return
+	ret
+
+# preserve size of image
+tinycolorArray = (input) ->
+	RGB = tinycolor(input).toRgb()
+	[RGB.r, RGB.g, RGB.b]
+
 class Question
 	constructor: (@game, @character) ->
-		@info = queue.getResult(@character + '.info')
+		@info = @game.queue.getResult(@character + '.info')
 		@defaultColor = tinycolor(@info['default'])
 		@originalColor = tinycolor(@info.color)
 
@@ -135,7 +200,7 @@ class Question
 		$('#original-color-preview').css 'background-color': @originalColor.toHexString()
 		$('#original-color-info .result-color-value').text @originalColor.toHexString()
 		$('#original-color-info .result-color-name').text nearestColor(@originalColor).name
-		$('#image').prepend queue.getResult('syaro.base')
+		$('#image').prepend @game.queue.getResult('syaro.base')
 		$('#rendering').removeClass 'invisible'
 		@caman = Caman('#canvas', 'img/' + @character + '/color.png', =>
 			@busy = false
@@ -252,6 +317,34 @@ class Question
 
 class Game
 	constructor: ->
+		# PreLoad Images
+		@queue = new createjs.LoadQueue()
+		characters = ['syaro']
+		manifest = []
+
+		characters.forEach (character) ->
+			manifest.push
+				id: character + '.base'
+				src: 'img/' + character + '/base.png'
+			,
+				id: character + '.color'
+				src: 'img/' + character + '/color.png'
+			,
+				id: character + '.info'
+				src: 'img/' + character + '/info.json'
+
+		@queue.on 'fileload', (event) ->
+			if event.item.type is 'image'
+				event.result.originalWidth = event.result.width
+				event.result.originalHeight = event.result.height
+
+		@queue.on 'complete', =>
+			$(document).ready =>
+				@init()
+
+		@queue.loadManifest manifest
+
+	init: ->
 		@currentQuestion = new Question @, 'syaro'
 
 		# fire onResize event
@@ -320,8 +413,8 @@ class Game
 		# 'box' means max acceptable size of #image-panel in #image-field.
 		RENDERING_HEIGHT = 40
 		IMAGEINFO_HEIGHT = 30
-		imageHeight = queue.getResult('syaro.base').originalHeight
-		imageWidth = queue.getResult('syaro.base').originalWidth
+		imageHeight = @queue.getResult('syaro.base').originalHeight
+		imageWidth = @queue.getResult('syaro.base').originalWidth
 		boxWidth = $('#image-panel').width() * 0.9
 		boxHeight = null
 		if matchMedia('(min-width: 900px)').matches
@@ -373,105 +466,6 @@ class Game
 		$pinch.css 'left', value * 100 + '%'
 		$value.text Math.floor(percentageToRealValue(colorset, parameter, value))
 
-percentageToRealValue = (colorset, parameter, value) ->
-	{
-		RGB: {
-			r: value * 255,
-			g: value * 255,
-			b: value * 255
-		},
-		HSV: {
-			h: value * 360,
-			s: value * 100,
-			v: value * 100
-		},
-		Lab: {
-			l: value * 100,
-			a: value * 200 - 100,
-			b: value * 200 - 100
-		}
-	}[colorset][parameter]
-
-colorsetToRealValueArray = (colorset, values) ->
-	parameters = {
-		RGB: ['r', 'g', 'b'],
-		HSV: ['h', 's', 'v'],
-		Lab: ['l', 'a', 'b']
-	}[colorset]
-
-	ret = []
-	parameters.forEach (parameter) ->
-		ret.push percentageToRealValue(colorset, parameter, values[parameter])
-		return
-	ret
-
-realValueToPercentage = (colorset, parameter, value) ->
-	{
-		RGB: {
-			r: value / 255,
-			g: value / 255,
-			b: value / 255
-		},
-		HSV: {
-			h: value / 360,
-			s: value / 100,
-			v: value / 100
-		},
-		Lab: {
-			l: value / 100,
-			a: (value + 100) / 200,
-			b: (value + 100) / 200
-		}
-	}[colorset][parameter]
-
-realValueArrayToColorset = (colorset, values) ->
-	parameters = {
-		RGB: ['r', 'g', 'b'],
-		HSV: ['h', 's', 'v'],
-		Lab: ['l', 'a', 'b']
-	}[colorset]
-
-	ret = {}
-	i = 0
-	parameters.forEach (parameter) ->
-		ret[parameter] = realValueToPercentage(colorset, parameter, values[i])
-		i++
-		return
-	ret
-
-# preserve size of image
-tinycolorArray = (input) ->
-	RGB = tinycolor(input).toRgb()
-	[RGB.r, RGB.g, RGB.b]
-
-# PreLoad Images
-queue = new createjs.LoadQueue()
-characters = ['syaro']
-manifest = []
-
-characters.forEach (character) ->
-	manifest.push
-		id: character + '.base'
-		src: 'img/' + character + '/base.png'
-	,
-		id: character + '.color'
-		src: 'img/' + character + '/color.png'
-	,
-		id: character + '.info'
-		src: 'img/' + character + '/info.json'
-
-queue.on 'fileload', (event) ->
-	if event.item.type is 'image'
-		event.result.originalWidth = event.result.width
-		event.result.originalHeight = event.result.height
-
-queue.on 'complete', ->
-	$(document).ready ->
-		game = new Game()
-, this
-
-queue.loadManifest manifest
-
 # set language
 
 availableLanguages = ['en', 'ja']
@@ -491,3 +485,7 @@ if not setLanguage
 
 $('html').addClass 'lang-' + setLanguage
 $('html').attr 'lang', setLanguage
+
+# kick start
+
+game = new Game()

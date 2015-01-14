@@ -166,6 +166,14 @@ tinycolor.prototype.toRgbPercentage = function () {
     return {r: this._r / 255, g: this._g / 255, b: this._b / 255, a: this._a};
 };
 
+colorConvert.hsv.lab = function (color) {
+    return colorConvert.rgb.lab(colorConvert.hsv.rgb(color));
+};
+
+colorConvert.lab.hsv = function (color) {
+    return colorConvert.rgb.hsv(colorConvert.lab.rgb(color));
+};
+
 /**
  *  Sugar Library v1.4.1
  *

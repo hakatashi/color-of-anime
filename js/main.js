@@ -1,5 +1,5 @@
 (function() {
-  var Game, Question, availableLanguages, characters, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, getX, language, manifest, nearestColor, percentageToRealValue, queue, realValueArrayToColorset, realValueToPercentage, setLanguage, tinycolorArray;
+  var Game, Question, availableLanguages, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, game, getX, language, nearestColor, percentageToRealValue, realValueArrayToColorset, realValueToPercentage, setLanguage, tinycolorArray;
 
   Caman.Filter.register('translate', function(fromRGB, toRGB) {
     var from, to;
@@ -24,14 +24,6 @@
       return colorRGB;
     });
   });
-
-  colorConvert.hsv.lab = function(color) {
-    return colorConvert.rgb.lab(colorConvert.hsv.rgb(color));
-  };
-
-  colorConvert.lab.hsv = function(color) {
-    return colorConvert.rgb.hsv(colorConvert.lab.rgb(color));
-  };
 
   distanceBetweenColors = function(A, B) {
     var ALab, BLab, adiff, bdiff, colorA, colorB, distance, ldiff;
@@ -88,12 +80,88 @@
     }
   };
 
+  percentageToRealValue = function(colorset, parameter, value) {
+    return {
+      RGB: {
+        r: value * 255,
+        g: value * 255,
+        b: value * 255
+      },
+      HSV: {
+        h: value * 360,
+        s: value * 100,
+        v: value * 100
+      },
+      Lab: {
+        l: value * 100,
+        a: value * 200 - 100,
+        b: value * 200 - 100
+      }
+    }[colorset][parameter];
+  };
+
+  colorsetToRealValueArray = function(colorset, values) {
+    var parameters, ret;
+    parameters = {
+      RGB: ['r', 'g', 'b'],
+      HSV: ['h', 's', 'v'],
+      Lab: ['l', 'a', 'b']
+    }[colorset];
+    ret = [];
+    parameters.forEach(function(parameter) {
+      ret.push(percentageToRealValue(colorset, parameter, values[parameter]));
+    });
+    return ret;
+  };
+
+  realValueToPercentage = function(colorset, parameter, value) {
+    return {
+      RGB: {
+        r: value / 255,
+        g: value / 255,
+        b: value / 255
+      },
+      HSV: {
+        h: value / 360,
+        s: value / 100,
+        v: value / 100
+      },
+      Lab: {
+        l: value / 100,
+        a: (value + 100) / 200,
+        b: (value + 100) / 200
+      }
+    }[colorset][parameter];
+  };
+
+  realValueArrayToColorset = function(colorset, values) {
+    var i, parameters, ret;
+    parameters = {
+      RGB: ['r', 'g', 'b'],
+      HSV: ['h', 's', 'v'],
+      Lab: ['l', 'a', 'b']
+    }[colorset];
+    ret = {};
+    i = 0;
+    parameters.forEach(function(parameter) {
+      ret[parameter] = realValueToPercentage(colorset, parameter, values[i]);
+      i++;
+    });
+    return ret;
+  };
+
+  tinycolorArray = function(input) {
+    var RGB;
+    RGB = tinycolor(input).toRgb();
+    return [RGB.r, RGB.g, RGB.b];
+  };
+
   Question = (function() {
     function Question(game, character) {
       var initColor;
       this.game = game;
       this.character = character;
-      this.info = queue.getResult(this.character + '.info');
+      this.info = this.game.queue.getResult(this.character + '.info');
       this.defaultColor = tinycolor(this.info['default']);
       this.originalColor = tinycolor(this.info.color);
       this.colorsets = {
@@ -145,7 +213,7 @@
       });
       $('#original-color-info .result-color-value').text(this.originalColor.toHexString());
       $('#original-color-info .result-color-name').text(nearestColor(this.originalColor).name);
-      $('#image').prepend(queue.getResult('syaro.base'));
+      $('#image').prepend(this.game.queue.getResult('syaro.base'));
       $('#rendering').removeClass('invisible');
       this.caman = Caman('#canvas', 'img/' + this.character + '/color.png', (function(_this) {
         return function() {
@@ -309,6 +377,39 @@
 
   Game = (function() {
     function Game() {
+      var characters, manifest;
+      this.queue = new createjs.LoadQueue();
+      characters = ['syaro'];
+      manifest = [];
+      characters.forEach(function(character) {
+        return manifest.push({
+          id: character + '.base',
+          src: 'img/' + character + '/base.png'
+        }, {
+          id: character + '.color',
+          src: 'img/' + character + '/color.png'
+        }, {
+          id: character + '.info',
+          src: 'img/' + character + '/info.json'
+        });
+      });
+      this.queue.on('fileload', function(event) {
+        if (event.item.type === 'image') {
+          event.result.originalWidth = event.result.width;
+          return event.result.originalHeight = event.result.height;
+        }
+      });
+      this.queue.on('complete', (function(_this) {
+        return function() {
+          return $(document).ready(function() {
+            return _this.init();
+          });
+        };
+      })(this));
+      this.queue.loadManifest(manifest);
+    }
+
+    Game.prototype.init = function() {
       this.currentQuestion = new Question(this, 'syaro');
       $(window).resize(this.onResize);
       this.onResize();
@@ -378,19 +479,19 @@
           return _this.currentQuestion.previewResult(true);
         };
       })(this));
-      $('#original-color-preview').on('click', (function(_this) {
+      return $('#original-color-preview').on('click', (function(_this) {
         return function() {
           return _this.currentQuestion.previewResult(false);
         };
       })(this));
-    }
+    };
 
     Game.prototype.onResize = function(event) {
       var IMAGEINFO_HEIGHT, RENDERING_HEIGHT, boxHeight, boxWidth, fieldHeight, fieldWidth, imageHeight, imageTop, imageWidth, zoom;
       RENDERING_HEIGHT = 40;
       IMAGEINFO_HEIGHT = 30;
-      imageHeight = queue.getResult('syaro.base').originalHeight;
-      imageWidth = queue.getResult('syaro.base').originalWidth;
+      imageHeight = this.queue.getResult('syaro.base').originalHeight;
+      imageWidth = this.queue.getResult('syaro.base').originalWidth;
       boxWidth = $('#image-panel').width() * 0.9;
       boxHeight = null;
       if (matchMedia('(min-width: 900px)').matches) {
@@ -456,117 +557,6 @@
 
   })();
 
-  percentageToRealValue = function(colorset, parameter, value) {
-    return {
-      RGB: {
-        r: value * 255,
-        g: value * 255,
-        b: value * 255
-      },
-      HSV: {
-        h: value * 360,
-        s: value * 100,
-        v: value * 100
-      },
-      Lab: {
-        l: value * 100,
-        a: value * 200 - 100,
-        b: value * 200 - 100
-      }
-    }[colorset][parameter];
-  };
-
-  colorsetToRealValueArray = function(colorset, values) {
-    var parameters, ret;
-    parameters = {
-      RGB: ['r', 'g', 'b'],
-      HSV: ['h', 's', 'v'],
-      Lab: ['l', 'a', 'b']
-    }[colorset];
-    ret = [];
-    parameters.forEach(function(parameter) {
-      ret.push(percentageToRealValue(colorset, parameter, values[parameter]));
-    });
-    return ret;
-  };
-
-  realValueToPercentage = function(colorset, parameter, value) {
-    return {
-      RGB: {
-        r: value / 255,
-        g: value / 255,
-        b: value / 255
-      },
-      HSV: {
-        h: value / 360,
-        s: value / 100,
-        v: value / 100
-      },
-      Lab: {
-        l: value / 100,
-        a: (value + 100) / 200,
-        b: (value + 100) / 200
-      }
-    }[colorset][parameter];
-  };
-
-  realValueArrayToColorset = function(colorset, values) {
-    var i, parameters, ret;
-    parameters = {
-      RGB: ['r', 'g', 'b'],
-      HSV: ['h', 's', 'v'],
-      Lab: ['l', 'a', 'b']
-    }[colorset];
-    ret = {};
-    i = 0;
-    parameters.forEach(function(parameter) {
-      ret[parameter] = realValueToPercentage(colorset, parameter, values[i]);
-      i++;
-    });
-    return ret;
-  };
-
-  tinycolorArray = function(input) {
-    var RGB;
-    RGB = tinycolor(input).toRgb();
-    return [RGB.r, RGB.g, RGB.b];
-  };
-
-  queue = new createjs.LoadQueue();
-
-  characters = ['syaro'];
-
-  manifest = [];
-
-  characters.forEach(function(character) {
-    return manifest.push({
-      id: character + '.base',
-      src: 'img/' + character + '/base.png'
-    }, {
-      id: character + '.color',
-      src: 'img/' + character + '/color.png'
-    }, {
-      id: character + '.info',
-      src: 'img/' + character + '/info.json'
-    });
-  });
-
-  queue.on('fileload', function(event) {
-    if (event.item.type === 'image') {
-      event.result.originalWidth = event.result.width;
-      return event.result.originalHeight = event.result.height;
-    }
-  });
-
-  queue.on('complete', function() {
-    return $(document).ready(function() {
-      var game;
-      return game = new Game();
-    });
-  }, this);
-
-  queue.loadManifest(manifest);
-
   availableLanguages = ['en', 'ja'];
 
   $('html').classes().forEach(function(classname) {
@@ -592,6 +582,8 @@
   $('html').addClass('lang-' + setLanguage);
 
   $('html').attr('lang', setLanguage);
+
+  game = new Game();
 
 }).call(this);
 
