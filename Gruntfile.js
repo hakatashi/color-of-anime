@@ -35,7 +35,17 @@ module.exports = function (grunt) {
 				tasks: ['compile:html']
 			},
 			js: {
-				files: ['**/*.js']
+				files: ['**/*.js', '**/*.coffee']
+			}
+		},
+		coffee: {
+			compile: {
+				options: {
+					sourceMap: true
+				},
+				expand: true,
+				src: 'js/**/*.coffee',
+				ext: '.js'
 			}
 		}
 	});
@@ -45,9 +55,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-coffee');
 
 	grunt.registerTask('default', ['compile', 'watch']);
-	grunt.registerTask('compile', ['compile:css', 'compile:html']);
+	grunt.registerTask('compile', ['compile:css', 'compile:html', 'compile:js']);
 	grunt.registerTask('compile:css', ['less', 'cssmin']);
 	grunt.registerTask('compile:html', ['jade']);
+	grunt.registerTask('compile:js', ['coffee']);
 };
