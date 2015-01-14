@@ -96,6 +96,29 @@
     };
 })(jQuery);
 
+// list classes of element
+// http://stackoverflow.com/questions/1227286/
+(function ($) {
+    $.fn.classes = function (callback) {
+        var classes = [];
+        $.each(this, function (i, v) {
+            var splitClassName = v.className.split(/\s+/);
+            for (var j in splitClassName) {
+                var className = splitClassName[j];
+                if (-1 === classes.indexOf(className)) {
+                    classes.push(className);
+                }
+            }
+        });
+        if ('function' === typeof callback) {
+            for (var i in classes) {
+                callback(classes[i]);
+            }
+        }
+        return classes;
+    };
+})(jQuery);
+
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
     Object.keys = (function() {
@@ -142,3 +165,28 @@ if (!Object.keys) {
 tinycolor.prototype.toRgbPercentage = function () {
     return {r: this._r / 255, g: this._g / 255, b: this._b / 255, a: this._a};
 };
+
+/**
+ *  Sugar Library v1.4.1
+ *
+ *  Freely distributable and licensed under the MIT-style license.
+ *  Copyright (c) 2013 Andrew Plummer
+ *  http://sugarjs.com/
+ *
+ * ---------------------------- */
+String.prototype.startsWith = function (searchString) {
+    var str, start, pos, len, searchLength, position = arguments[1];
+    str = String(this);
+    searchString = String(searchString);
+    pos = Number(position) || 0;
+    len = str.length;
+    start = Math.min(Math.max(pos, 0), len);
+    searchLength = searchString.length;
+    if(searchLength + start > len) {
+        return false;
+    }
+    if(str.substr(start, searchLength) === searchString) {
+        return true;
+    }
+    return false;
+}

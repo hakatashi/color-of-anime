@@ -471,3 +471,23 @@ queue.on 'complete', ->
 , this
 
 queue.loadManifest manifest
+
+# set language
+
+availableLanguages = ['en', 'ja']
+
+$('html').classes().forEach (classname) ->
+	if classname.startsWith 'lang-'
+		$('html').removeClass classname
+
+language = navigator.userLanguage or navigator.language;
+setLanguage = null
+availableLanguages.forEach (availableLanguage) ->
+	if language.startsWith availableLanguage
+		setLanguage = availableLanguage
+
+if not setLanguage
+	setLanguage = availableLanguages[0]
+
+$('html').addClass 'lang-' + setLanguage
+$('html').attr 'lang', setLanguage

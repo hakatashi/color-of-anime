@@ -1,5 +1,5 @@
 (function() {
-  var Game, Question, characters, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, getX, manifest, nearestColor, percentageToRealValue, queue, realValueArrayToColorset, realValueToPercentage, tinycolorArray;
+  var Game, Question, availableLanguages, characters, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, getX, language, manifest, nearestColor, percentageToRealValue, queue, realValueArrayToColorset, realValueToPercentage, setLanguage, tinycolorArray;
 
   Caman.Filter.register('translate', function(fromRGB, toRGB) {
     var from, to;
@@ -566,6 +566,32 @@
   }, this);
 
   queue.loadManifest(manifest);
+
+  availableLanguages = ['en', 'ja'];
+
+  $('html').classes().forEach(function(classname) {
+    if (classname.startsWith('lang-')) {
+      return $('html').removeClass(classname);
+    }
+  });
+
+  language = navigator.userLanguage || navigator.language;
+
+  setLanguage = null;
+
+  availableLanguages.forEach(function(availableLanguage) {
+    if (language.startsWith(availableLanguage)) {
+      return setLanguage = availableLanguage;
+    }
+  });
+
+  if (!setLanguage) {
+    setLanguage = availableLanguages[0];
+  }
+
+  $('html').addClass('lang-' + setLanguage);
+
+  $('html').attr('lang', setLanguage);
 
 }).call(this);
 
