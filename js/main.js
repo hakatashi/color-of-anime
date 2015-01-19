@@ -158,7 +158,6 @@
 
   Question = (function() {
     function Question(game, character) {
-      var initColor;
       this.game = game;
       this.character = character;
       this.info = this.game.queue.getResult("" + this.character + ".info");
@@ -205,12 +204,7 @@
       this.score = null;
       this.game.selectTab('RGB');
       this.selectedColorset = 'RGB';
-      initColor = null;
-      if (this.questionIndex === 0 && location.hash && (initColor = tinycolor(location.hash))._format) {
-        this.currentSliderColor.RGB = initColor.toRgbPercentage();
-      } else {
-        this.currentSliderColor.RGB = this.defaultColor.toRgbPercentage();
-      }
+      this.currentSliderColor.RGB = this.defaultColor.toRgbPercentage();
       this.updateSliders('RGB');
       $('#original-color-preview').css({
         'background-color': this.originalColor.toHexString()
@@ -276,7 +270,6 @@
       $('.color-preview-value').text(color.toHexString());
       $('.color-preview-square').css('background-color', color.toHexString());
       if (this.phase === 'slider') {
-        location.replace(color.toHexString());
         this.yourColor = $.extend({}, this.currentSliderColor.RGB);
       }
       return Object.keys(this.colorsets).forEach((function(_this) {
@@ -418,7 +411,7 @@
   Game = (function() {
     function Game() {
       var manifest;
-      this.characters = ['syaro', 'chino', 'hana'];
+      this.characters = ['kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari'];
       this.questionIndex = 0;
       this.queue = new createjs.LoadQueue();
       manifest = [];
@@ -531,8 +524,8 @@
       var IMAGEINFO_HEIGHT, RENDERING_HEIGHT, boxHeight, boxWidth, fieldHeight, fieldWidth, imageHeight, imageTop, imageWidth, zoom;
       RENDERING_HEIGHT = 40;
       IMAGEINFO_HEIGHT = 30;
-      imageHeight = this.queue.getResult('syaro.base').originalHeight;
-      imageWidth = this.queue.getResult('syaro.base').originalWidth;
+      imageHeight = this.queue.getResult('kirima-syaro.base').originalHeight;
+      imageWidth = this.queue.getResult('kirima-syaro.base').originalWidth;
       boxWidth = $('#image-panel').width() * 0.9;
       boxHeight = null;
       if (matchMedia('(min-width: 900px)').matches) {

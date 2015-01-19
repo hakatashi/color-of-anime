@@ -196,11 +196,7 @@ class Question
 		@game.selectTab 'RGB'
 		@selectedColorset = 'RGB'
 
-		initColor = null
-		if @questionIndex is 0 and location.hash and (initColor = tinycolor(location.hash))._format
-			@currentSliderColor.RGB = initColor.toRgbPercentage()
-		else
-			@currentSliderColor.RGB = @defaultColor.toRgbPercentage()
+		@currentSliderColor.RGB = @defaultColor.toRgbPercentage()
 
 		@updateSliders 'RGB'
 
@@ -265,7 +261,6 @@ class Question
 		$('.color-preview-value').text color.toHexString()
 		$('.color-preview-square').css 'background-color', color.toHexString()
 		if @phase is 'slider'
-			location.replace color.toHexString()
 			@yourColor = $.extend {}, @currentSliderColor.RGB
 
 		# update sliders gradients
@@ -364,7 +359,7 @@ class Question
 
 class Game
 	constructor: ->
-		@characters = ['syaro', 'chino', 'hana']
+		@characters = ['kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari']
 		@questionIndex = 0
 
 		# PreLoad Images
@@ -461,8 +456,8 @@ class Game
 		# 'box' means max acceptable size of #image-panel in #image-field.
 		RENDERING_HEIGHT = 40
 		IMAGEINFO_HEIGHT = 30
-		imageHeight = @queue.getResult('syaro.base').originalHeight
-		imageWidth = @queue.getResult('syaro.base').originalWidth
+		imageHeight = @queue.getResult('kirima-syaro.base').originalHeight
+		imageWidth = @queue.getResult('kirima-syaro.base').originalWidth
 		boxWidth = $('#image-panel').width() * 0.9
 		boxHeight = null
 		if matchMedia('(min-width: 900px)').matches
