@@ -1,6 +1,12 @@
 {
-	"name": "ハナ・N・フォンテーンスタンド",
-	"group": "ハナヤマタ",
+	"name": {
+		"ja": "ハナ・N・フォンテーンスタンド",
+		"en": "Hana N Fonteinsutando"
+	},
+	"group": {
+		"ja": "ハナヤマタ",
+		"en": "Hanayamata"
+	},
 	"color": "#FFFFE0",
 	"default": "#41307a",
 	"source": "http://hanayamata.com/twitter-icon.php",

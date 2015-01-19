@@ -220,13 +220,28 @@
       $('#image-field').prepend([
         this.imageElement = $('<div>', {
           id: 'image'
-        }).prepend([
+        }).append([
           $('<canvas>').attr({
             id: 'canvas',
             width: this.baseImage.originalWidth,
             height: this.baseImage.originalHeight
           }), this.baseImage
         ]).invisible()
+      ]);
+      $('#image-info').empty().append([
+        $('<span>', {
+          "class": 'text-en',
+          lang: 'en',
+          text: "" + this.info.name.en + "(" + this.info.group.en + ")"
+        }), $('<span>', {
+          "class": 'text-ja',
+          lang: 'ja',
+          text: "" + this.info.name.ja + "(" + this.info.group.ja + ")"
+        }), document.createTextNode(' - '), $('<a>', {
+          href: this.info.source,
+          target: '_blank',
+          text: 'Color Source'
+        })
       ]);
       this.caman = Caman('#canvas', 'img/' + this.character + '/color.png', (function(_this) {
         return function() {
@@ -403,7 +418,7 @@
   Game = (function() {
     function Game() {
       var manifest;
-      this.characters = ['syaro', 'chino'];
+      this.characters = ['syaro', 'chino', 'hana'];
       this.questionIndex = 0;
       this.queue = new createjs.LoadQueue();
       manifest = [];

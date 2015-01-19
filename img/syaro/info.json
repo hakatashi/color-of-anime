@@ -1,8 +1,12 @@
 {
-	"name": "桐間紗路",
-	"name_en": "Sharo Kirima",
-	"group": "ご注文はうさぎですか?",
-	"group_en": "Is The Order a Rabbit?",
+	"name": {
+		"ja": "桐間紗路",
+		"en": "Sharo Kirima"
+	},
+	"group": {
+		"ja": "ご注文はうさぎですか?",
+		"en": "Is The Order a Rabbit?"
+	},
 	"color": "#F5E692",
 	"default": "#692400",
 	"source": "http://www.gochiusa.com/news/hp0001/index00040000.html",

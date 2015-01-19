@@ -1,8 +1,12 @@
 {
-	"name": "香風智乃",
-	"name_en": "Chino Kafuu",
-	"group": "ご注文はうさぎですか?",
-	"group_en": "Is The Order a Rabbit?",
+	"name": {
+		"ja": "香風智乃",
+		"en": "Chino Kafuu"
+	},
+	"group": {
+		"ja": "ご注文はうさぎですか?",
+		"en": "Is The Order a Rabbit?"
+	},
 	"color": "#E8E6F4",
 	"default": "#FFC0CB",
 	"source": "http://www.gochiusa.com/news/hp0001/index00040000.html",

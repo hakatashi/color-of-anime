@@ -210,7 +210,7 @@ class Question
 
 		# construct image field
 		$('#image-field').prepend [
-			@imageElement = $('<div>', id: 'image').prepend([
+			@imageElement = $('<div>', id: 'image').append([
 				$('<canvas>').attr(
 					id: 'canvas',
 					width: @baseImage.originalWidth,
@@ -218,6 +218,26 @@ class Question
 				),
 				@baseImage
 			]).invisible()
+		]
+
+		# update image information
+		$('#image-info').empty().append [
+			$('<span>',
+				class: 'text-en',
+				lang: 'en',
+				text: "#{@info.name.en}(#{@info.group.en})"
+			),
+			$('<span>',
+				class: 'text-ja',
+				lang: 'ja',
+				text: "#{@info.name.ja}(#{@info.group.ja})"
+			),
+			document.createTextNode(' - '),
+			$('<a>',
+				href: @info.source,
+				target: '_blank',
+				text: 'Color Source'
+			)
 		]
 
 		@caman = Caman('#canvas', 'img/' + @character + '/color.png', =>
@@ -344,7 +364,7 @@ class Question
 
 class Game
 	constructor: ->
-		@characters = ['syaro', 'chino']
+		@characters = ['syaro', 'chino', 'hana']
 		@questionIndex = 0
 
 		# PreLoad Images
