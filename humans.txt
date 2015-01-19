@@ -7,8 +7,9 @@ Twitter: @hakatashi
 # THANKS
 
 * Every Anime Creator
-* NPCA Mempers: Compatibility Tests
-* GitHub: Hosting, Social Coding
+* [Method of Action](http://method.ac/): Ideas of the implementation
+* [NPCA](http://www.npca.jp/) Mempers: Compatibility Tests
+* [GitHub](https://github.com/): Hosting, Social Coding
 
 # TECHNOLOGY COLOPHON
 
@@ -25,6 +26,7 @@ Twitter: @hakatashi
 * Jade
 * Less
 * Google Fonts
+* Lato Fonts
 * Ionicons
 * PreloadJS
 * Caman.js
