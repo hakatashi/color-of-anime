@@ -424,15 +424,20 @@ h1 {
 	word-wrap: break-word;
 }
 
-.submit {
+.button {
 	width: 100%;
 	height: 50px;
+	display: block;
 
 	border: none;
 	border-radius: 5px;
 	font-family: inherit;
 	font-size: 24px;
 	background-color: #EEE;
+}
+
+.submit {
+	.button;
 }
 
 #result-field {
@@ -541,8 +546,9 @@ h1 {
 	line-height: 20px;
 }
 
-#result-field .submit {
-	display: block;
+.go-next {
+	.button;
+
 	width: 200px;
 	margin: 0 auto 10px;
 }

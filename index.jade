@@ -24,8 +24,6 @@ block body
 				+en('Rendering...')
 				+ja('レンダリング中…')
 			#image-field
-				#image.invisible
-					canvas#canvas(width='400', height='400')
 			#image-info
 				+en('Sharo Kirima(Is The Order a Rabbit?)')
 				+ja('桐間紗路(ご注文はうさぎですか?)')
@@ -34,12 +32,9 @@ block body
 		#color-panel.panel
 			#color-field
 				ul#color-tabs.tabs
-					li.tab.selected
-						.tab-inner RGB
-					li.tab
-						.tab-inner HSV
-					li.tab
-						.tab-inner Lab
+					each colorset in ['RGB', 'HSV', 'Lab']
+						li.tab(class=(colorset==='RGB')?'selected':'', data-colorset=colorset)
+							.tab-inner= colorset
 				#panel
 					#color-sliders
 						- var colorsets = {RGB: {r: 'R', g: 'G', b: 'B'}, HSV: {h: 'H', s: 'S', v: 'V'}, Lab: {l: 'L', a: 'a', b: 'b'}};
@@ -86,4 +81,4 @@ block body
 								#original-color-info.result-color-info
 									.result-color-value #ffffff
 									.result-color-name white
-						button.submit OK
+						button.go-next OK

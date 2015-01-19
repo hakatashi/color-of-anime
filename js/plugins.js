@@ -119,6 +119,17 @@
     };
 })(jQuery);
 
+// perform visibility of jquery element
+(function ($) {
+    $.fn.visible = function() {
+        return this.css('visibility', 'visible');
+    };
+
+    $.fn.invisible = function() {
+        return this.css('visibility', 'hidden');
+    };
+})(jQuery);
+
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
     Object.keys = (function() {

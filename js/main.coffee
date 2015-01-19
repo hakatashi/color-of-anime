@@ -150,9 +150,14 @@ tinycolorArray = (input) ->
 
 class Question
 	constructor: (@game, @character) ->
-		@info = @game.queue.getResult(@character + '.info')
+		@info = @game.queue.getResult("#{@character}.info")
 		@defaultColor = tinycolor(@info['default'])
 		@originalColor = tinycolor(@info.color)
+
+		@baseImage = @game.queue.getResult("#{@character}.base")
+		@colorImage = @game.queue.getResult("#{@character}.color")
+
+		@questionIndex = @game.questionIndex
 
 		@colorsets =
 			RGB: ['r', 'g', 'b']
@@ -183,14 +188,16 @@ class Question
 				a: 0
 				b: 0
 
-		@selectedColorset = 'RGB'
 		@busy = true
 		@caman = null
 		@phase = 'slider'
 		@score = null
 
+		@game.selectTab 'RGB'
+		@selectedColorset = 'RGB'
+
 		initColor = null
-		if location.hash and (initColor = tinycolor(location.hash))._format
+		if @questionIndex is 0 and location.hash and (initColor = tinycolor(location.hash))._format
 			@currentSliderColor.RGB = initColor.toRgbPercentage()
 		else
 			@currentSliderColor.RGB = @defaultColor.toRgbPercentage()
@@ -200,12 +207,25 @@ class Question
 		$('#original-color-preview').css 'background-color': @originalColor.toHexString()
 		$('#original-color-info .result-color-value').text @originalColor.toHexString()
 		$('#original-color-info .result-color-name').text nearestColor(@originalColor).name
-		$('#image').prepend @game.queue.getResult('syaro.base')
-		$('#rendering').removeClass 'invisible'
+
+		# construct image field
+		$('#image-field').prepend [
+			@imageElement = $('<div>', id: 'image').prepend([
+				$('<canvas>').attr(
+					id: 'canvas',
+					width: @baseImage.originalWidth,
+					height: @baseImage.originalHeight
+				),
+				@baseImage
+			]).invisible()
+		]
+
 		@caman = Caman('#canvas', 'img/' + @character + '/color.png', =>
 			@busy = false
 			@updateImage()
 		)
+
+		$('#color-sliders').fadeIn()
 
 	# Update current slider color parameters based on specific colorset parameters
 	updateSliders: (base) ->
@@ -219,7 +239,7 @@ class Question
 
 		@updateInfo()
 
-	# update displayed information based on current color parameter
+	# update displayed color information based on current color parameter
 	updateInfo: ->
 		color = tinycolor.fromRatio(@currentSliderColor.RGB)
 		$('.color-preview-value').text color.toHexString()
@@ -260,12 +280,13 @@ class Question
 		return if @currentImageColor.r is @currentSliderColor.RGB.r and @currentImageColor.g is @currentSliderColor.RGB.g and @currentImageColor.b is @currentSliderColor.RGB.b
 		@busy = true
 		@currentImageColor = $.extend({}, @currentSliderColor.RGB)
-		$('#rendering').removeClass 'invisible'
+		$('#rendering').visible()
 		@caman.revert false
 		@caman.translate @info.color, colorsetToRealValueArray('RGB', @currentSliderColor.RGB)
 		@caman.render =>
-			$('#image').removeClass 'invisible'
-			$('#rendering').addClass 'invisible'
+			if @imageElement.css('visibility') is 'hidden'
+				@imageElement.visible().hide().fadeIn()
+			$('#rendering').invisible()
 			@busy = false
 			@updateImage()
 
@@ -315,14 +336,22 @@ class Question
 		@updateSliders 'RGB'
 		@updateImage()
 
+	# quit problem
+	quit: (callback) ->
+		$('#result-field').fadeOut callback
+		@imageElement.fadeOut =>
+			@imageElement.remove()
+
 class Game
 	constructor: ->
+		@characters = ['syaro', 'chino']
+		@questionIndex = 0
+
 		# PreLoad Images
 		@queue = new createjs.LoadQueue()
-		characters = ['syaro']
 		manifest = []
 
-		characters.forEach (character) ->
+		@characters.forEach (character) ->
 			manifest.push
 				id: character + '.base'
 				src: 'img/' + character + '/base.png'
@@ -345,10 +374,10 @@ class Game
 		@queue.loadManifest manifest
 
 	init: ->
-		@currentQuestion = new Question @, 'syaro'
+		@currentQuestion = new Question @, @characters[0]
 
 		# fire onResize event
-		$(window).resize @onResize
+		$(window).resize @onResize.bind(@)
 		@onResize()
 
 		# DOM binders
@@ -393,11 +422,7 @@ class Game
 
 		$('.tab-inner').on 'click', (event) =>
 			if @currentQuestion.phase is 'slider'
-				colorset = $(event.currentTarget).text()
-				$('.colorset-sliders').hide()
-				$('.tab').removeClass 'selected'
-				$('.colorset-sliders[data-colorset=' + colorset + ']').show()
-				$(event.currentTarget).parent('.tab').addClass 'selected'
+				@selectTab($(event.currentTarget).text())
 
 		$('.submit').on 'click', =>
 			@currentQuestion.submitResult()
@@ -407,6 +432,9 @@ class Game
 
 		$('#original-color-preview').on 'click', =>
 			@currentQuestion.previewResult false
+
+		$('.go-next').on 'click', =>
+			@goNext()
 
 	onResize: (event) ->
 		# fit #image-field to be contained in #image-panel
@@ -465,6 +493,17 @@ class Game
 		$value = $parameter.find('.color-value')
 		$pinch.css 'left', value * 100 + '%'
 		$value.text Math.floor(percentageToRealValue(colorset, parameter, value))
+
+	goNext: ->
+		@currentQuestion.quit =>
+			@questionIndex++
+			@currentQuestion = new Question @, @characters[@questionIndex]
+
+	selectTab: (tab) ->
+		$('.colorset-sliders').hide()
+		$('.tab').removeClass 'selected'
+		$(".colorset-sliders[data-colorset=#{tab}]").show()
+		$(".tab[data-colorset=#{tab}]").addClass 'selected'
 
 # set language
 

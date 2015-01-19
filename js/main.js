@@ -161,9 +161,12 @@
       var initColor;
       this.game = game;
       this.character = character;
-      this.info = this.game.queue.getResult(this.character + '.info');
+      this.info = this.game.queue.getResult("" + this.character + ".info");
       this.defaultColor = tinycolor(this.info['default']);
       this.originalColor = tinycolor(this.info.color);
+      this.baseImage = this.game.queue.getResult("" + this.character + ".base");
+      this.colorImage = this.game.queue.getResult("" + this.character + ".color");
+      this.questionIndex = this.game.questionIndex;
       this.colorsets = {
         RGB: ['r', 'g', 'b'],
         HSV: ['h', 's', 'v'],
@@ -196,13 +199,14 @@
           b: 0
         }
       };
-      this.selectedColorset = 'RGB';
       this.busy = true;
       this.caman = null;
       this.phase = 'slider';
       this.score = null;
+      this.game.selectTab('RGB');
+      this.selectedColorset = 'RGB';
       initColor = null;
-      if (location.hash && (initColor = tinycolor(location.hash))._format) {
+      if (this.questionIndex === 0 && location.hash && (initColor = tinycolor(location.hash))._format) {
         this.currentSliderColor.RGB = initColor.toRgbPercentage();
       } else {
         this.currentSliderColor.RGB = this.defaultColor.toRgbPercentage();
@@ -213,14 +217,24 @@
       });
       $('#original-color-info .result-color-value').text(this.originalColor.toHexString());
       $('#original-color-info .result-color-name').text(nearestColor(this.originalColor).name);
-      $('#image').prepend(this.game.queue.getResult('syaro.base'));
-      $('#rendering').removeClass('invisible');
+      $('#image-field').prepend([
+        this.imageElement = $('<div>', {
+          id: 'image'
+        }).prepend([
+          $('<canvas>').attr({
+            id: 'canvas',
+            width: this.baseImage.originalWidth,
+            height: this.baseImage.originalHeight
+          }), this.baseImage
+        ]).invisible()
+      ]);
       this.caman = Caman('#canvas', 'img/' + this.character + '/color.png', (function(_this) {
         return function() {
           _this.busy = false;
           return _this.updateImage();
         };
       })(this));
+      $('#color-sliders').fadeIn();
     }
 
     Question.prototype.updateSliders = function(base) {
@@ -292,13 +306,15 @@
       }
       this.busy = true;
       this.currentImageColor = $.extend({}, this.currentSliderColor.RGB);
-      $('#rendering').removeClass('invisible');
+      $('#rendering').visible();
       this.caman.revert(false);
       this.caman.translate(this.info.color, colorsetToRealValueArray('RGB', this.currentSliderColor.RGB));
       return this.caman.render((function(_this) {
         return function() {
-          $('#image').removeClass('invisible');
-          $('#rendering').addClass('invisible');
+          if (_this.imageElement.css('visibility') === 'hidden') {
+            _this.imageElement.visible().hide().fadeIn();
+          }
+          $('#rendering').invisible();
           _this.busy = false;
           return _this.updateImage();
         };
@@ -371,17 +387,27 @@
       return this.updateImage();
     };
 
+    Question.prototype.quit = function(callback) {
+      $('#result-field').fadeOut(callback);
+      return this.imageElement.fadeOut((function(_this) {
+        return function() {
+          return _this.imageElement.remove();
+        };
+      })(this));
+    };
+
     return Question;
 
   })();
 
   Game = (function() {
     function Game() {
-      var characters, manifest;
+      var manifest;
+      this.characters = ['syaro', 'chino'];
+      this.questionIndex = 0;
       this.queue = new createjs.LoadQueue();
-      characters = ['syaro'];
       manifest = [];
-      characters.forEach(function(character) {
+      this.characters.forEach(function(character) {
         return manifest.push({
           id: character + '.base',
           src: 'img/' + character + '/base.png'
@@ -410,8 +436,8 @@
     }
 
     Game.prototype.init = function() {
-      this.currentQuestion = new Question(this, 'syaro');
-      $(window).resize(this.onResize);
+      this.currentQuestion = new Question(this, this.characters[0]);
+      $(window).resize(this.onResize.bind(this));
       this.onResize();
       $('.color-parameter').on('touchstart mousedown', (function(_this) {
         return function(event) {
@@ -459,13 +485,8 @@
       })(this));
       $('.tab-inner').on('click', (function(_this) {
         return function(event) {
-          var colorset;
           if (_this.currentQuestion.phase === 'slider') {
-            colorset = $(event.currentTarget).text();
-            $('.colorset-sliders').hide();
-            $('.tab').removeClass('selected');
-            $('.colorset-sliders[data-colorset=' + colorset + ']').show();
-            return $(event.currentTarget).parent('.tab').addClass('selected');
+            return _this.selectTab($(event.currentTarget).text());
           }
         };
       })(this));
@@ -479,9 +500,14 @@
           return _this.currentQuestion.previewResult(true);
         };
       })(this));
-      return $('#original-color-preview').on('click', (function(_this) {
+      $('#original-color-preview').on('click', (function(_this) {
         return function() {
           return _this.currentQuestion.previewResult(false);
+        };
+      })(this));
+      return $('.go-next').on('click', (function(_this) {
+        return function() {
+          return _this.goNext();
         };
       })(this));
     };
@@ -551,6 +577,22 @@
       $value = $parameter.find('.color-value');
       $pinch.css('left', value * 100 + '%');
       return $value.text(Math.floor(percentageToRealValue(colorset, parameter, value)));
+    };
+
+    Game.prototype.goNext = function() {
+      return this.currentQuestion.quit((function(_this) {
+        return function() {
+          _this.questionIndex++;
+          return _this.currentQuestion = new Question(_this, _this.characters[_this.questionIndex]);
+        };
+      })(this));
+    };
+
+    Game.prototype.selectTab = function(tab) {
+      $('.colorset-sliders').hide();
+      $('.tab').removeClass('selected');
+      $(".colorset-sliders[data-colorset=" + tab + "]").show();
+      return $(".tab[data-colorset=" + tab + "]").addClass('selected');
     };
 
     return Game;
