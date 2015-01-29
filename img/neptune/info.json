@@ -1,0 +1,15 @@
+{
+	"name": {
+		"ja": "ネプテューヌ",
+		"en": "Neptune"
+	},
+	"group": {
+		"ja": "超次元ゲイム ネプテューヌ",
+		"en": "Hyperdimension Neptunia"
+	},
+	"color": "#FFE5F7",
+	"default": "#07C21E",
+	"source": "http://www.compileheart.com/neptune_v/#special",
+	"width": 192,
+	"height": 192
+}

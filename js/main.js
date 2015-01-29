@@ -410,9 +410,33 @@
 
   Game = (function() {
     function Game() {
-      var manifest;
-      this.characters = ['kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari'];
+      var i, manifest, selectableCharacters, _i, _ref;
+      this.availableCharacters = ['akapuyo', 'harusaki-chiwa', 'ibaraki-kasen', 'neptune', 'takanashi-rikka', 'kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari'];
       this.questionIndex = 0;
+      if (typeof localStorage.seenCharacters === 'string') {
+        this.seenCharacters = JSON.parse(localStorage.seenCharacters);
+      } else {
+        this.seenCharacters = [];
+      }
+      this.characters = [];
+      selectableCharacters = [];
+      this.availableCharacters.forEach((function(_this) {
+        return function(character) {
+          if (_this.seenCharacters.indexOf(character === -1)) {
+            return selectableCharacters.push(character);
+          }
+        };
+      })(this));
+      shuffle(selectableCharacters);
+      shuffle(this.seenCharacters);
+      for (i = _i = 0, _ref = Math.min(selectableCharacters.length, 5) - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        this.characters.push(selectableCharacters[i]);
+      }
+      i = 0;
+      while (i < 5 - this.characters.length) {
+        this.characters.push(this.seenCharacters[i]);
+        i++;
+      }
       this.queue = new createjs.LoadQueue();
       manifest = [];
       this.characters.forEach(function(character) {
@@ -532,11 +556,12 @@
     };
 
     Game.prototype.onResize = function(event) {
-      var IMAGEINFO_HEIGHT, RENDERING_HEIGHT, boxHeight, boxWidth, fieldHeight, fieldWidth, imageHeight, imageTop, imageWidth, zoom;
+      var IMAGEINFO_HEIGHT, RENDERING_HEIGHT, boxHeight, boxWidth, character, fieldHeight, fieldWidth, imageHeight, imageTop, imageWidth, zoom;
       RENDERING_HEIGHT = 40;
       IMAGEINFO_HEIGHT = 30;
-      imageHeight = this.queue.getResult('kirima-syaro.base').originalHeight;
-      imageWidth = this.queue.getResult('kirima-syaro.base').originalWidth;
+      character = this.characters[this.questionIndex];
+      imageHeight = this.queue.getResult(character + '.base').originalHeight;
+      imageWidth = this.queue.getResult(character + '.base').originalWidth;
       boxWidth = $('#image-panel').width() * 0.9;
       boxHeight = null;
       if (matchMedia('(min-width: 900px)').matches) {
@@ -601,6 +626,11 @@
     Game.prototype.goNext = function() {
       return this.currentQuestion.quit((function(_this) {
         return function() {
+          _this.seenCharacters.push(_this.characters[_this.questionIndex]);
+          if (_this.seenCharacters.length === _this.availableCharacters.length) {
+            _this.seenCharacters = [];
+          }
+          localStorage.seenCharacters = JSON.stringify(_this.seenCharacters);
           _this.questionIndex++;
           return _this.currentQuestion = new Question(_this, _this.characters[_this.questionIndex]);
         };

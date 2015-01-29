@@ -359,8 +359,32 @@ class Question
 
 class Game
 	constructor: ->
-		@characters = ['kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari']
+		@availableCharacters = ['akapuyo', 'harusaki-chiwa', 'ibaraki-kasen', 'neptune', 'takanashi-rikka', 'kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari']
 		@questionIndex = 0
+
+		if typeof localStorage.seenCharacters is 'string'
+			@seenCharacters = JSON.parse(localStorage.seenCharacters)
+		else
+			@seenCharacters = []
+
+		# Select characters for this session
+		@characters = []
+
+		selectableCharacters = []
+		@availableCharacters.forEach (character) =>
+			if @seenCharacters.indexOf character is -1
+				selectableCharacters.push character
+
+		shuffle selectableCharacters
+		shuffle @seenCharacters
+
+		for i in [0 .. (Math.min(selectableCharacters.length, 5) - 1)]
+			@characters.push selectableCharacters[i]
+
+		i = 0
+		while i < 5 - @characters.length
+			@characters.push @seenCharacters[i]
+			i++
 
 		# PreLoad Images
 		@queue = new createjs.LoadQueue()
@@ -464,8 +488,9 @@ class Game
 		# 'box' means max acceptable size of #image-panel in #image-field.
 		RENDERING_HEIGHT = 40
 		IMAGEINFO_HEIGHT = 30
-		imageHeight = @queue.getResult('kirima-syaro.base').originalHeight
-		imageWidth = @queue.getResult('kirima-syaro.base').originalWidth
+		character = @characters[@questionIndex]
+		imageHeight = @queue.getResult(character + '.base').originalHeight
+		imageWidth = @queue.getResult(character + '.base').originalWidth
 		boxWidth = $('#image-panel').width() * 0.9
 		boxHeight = null
 		if matchMedia('(min-width: 900px)').matches
@@ -519,6 +544,11 @@ class Game
 
 	goNext: ->
 		@currentQuestion.quit =>
+			@seenCharacters.push @characters[@questionIndex]
+			if @seenCharacters.length is @availableCharacters.length
+				@seenCharacters = []
+			localStorage.seenCharacters = JSON.stringify @seenCharacters
+
 			@questionIndex++
 			@currentQuestion = new Question @, @characters[@questionIndex]
 

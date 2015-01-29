@@ -1,0 +1,15 @@
+{
+	"name": {
+		"ja": "赤ぷよ",
+		"en": "Red Puyo"
+	},
+	"group": {
+		"ja": "ぷよぷよ",
+		"en": "Puyo Puyo"
+	},
+	"color": "#BD0401",
+	"default": "#6A13E8",
+	"source": "http://puyo.sega.jp/puyopuyo!!/enjoy/icon/",
+	"width": 128,
+	"height": 128
+}

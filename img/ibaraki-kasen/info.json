@@ -1,0 +1,15 @@
+{
+	"name": {
+		"ja": "茨木華扇",
+		"en": "Kasen Ibaraki"
+	},
+	"group": {
+		"ja": "東方Project",
+		"en": "Touhou Project"
+	},
+	"color": "#ED724A",
+	"default": "#FFC0CB",
+	"source": "http://www.ichijinsha.co.jp/special/toho_ibarakasen/",
+	"width": 211,
+	"height": 212
+}
