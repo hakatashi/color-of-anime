@@ -83,6 +83,13 @@
 .clearfix:after {
   clear: both;
 }
+.fullfill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 @font-face {
   font-family: "Ionicons";
   src: url("../fonts/ionicons.eot");
@@ -124,6 +131,43 @@ html.lang-ja .text-ja {
 }
 html.lang-en .text-en {
   display: inline;
+}
+#loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: whitesmoke;
+  z-index: 100;
+  overflow: hidden;
+}
+#loading-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 0%;
+}
+#loading-header {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 10vw;
+  font-weight: bold;
+}
+#loading-text {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 3vw;
 }
 #container {
   position: relative;

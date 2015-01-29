@@ -16,6 +16,14 @@ block head
 	script(src='//cdnjs.cloudflare.com/ajax/libs/tinycolor/1.1.1/tinycolor.min.js')
 
 block body
+	#loading
+		svg#loading-background(version='1.1', xmlns='http://www.w3.org/2000/svg', xmlns:xlink='http://www.w3.org/1999/xlink')
+			- var colors = ['#DF7871', '#E8B359', '#D8DB6F', '#A0D08E', '#8D9FBA', '#D48EBB'], i = 0;
+			each color in colors
+				rect(x=(i / 6 * 100) + '%', fill=color, width=(1 / 6 * 100) + '%', height='100%')
+				- i++;
+		h1#loading-header Color of Anime
+		p#loading-text Now Loading...
 	h1 Color of Anime
 	#container
 		#image-panel.panel

@@ -433,9 +433,19 @@
           return event.result.originalHeight = event.result.height;
         }
       });
+      this.queue.on('progress', function(event) {
+        return $('#loading-background').stop(true).animate({
+          height: event.progress * 100 + '%'
+        }, 500, 'easeOutExpo');
+      });
       this.queue.on('complete', (function(_this) {
         return function() {
           return $(document).ready(function() {
+            $('#loading').animate({
+              top: '-100%'
+            }, function() {
+              return $(this).hide();
+            });
             return _this.init();
           });
         };

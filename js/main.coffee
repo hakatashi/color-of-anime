@@ -382,8 +382,15 @@ class Game
 				event.result.originalWidth = event.result.width
 				event.result.originalHeight = event.result.height
 
+		@queue.on 'progress', (event) ->
+			$('#loading-background').stop(true).animate {
+				height: event.progress * 100 + '%'
+			}, 500, 'easeOutExpo'
+
 		@queue.on 'complete', =>
 			$(document).ready =>
+				$('#loading').animate {top: '-100%'}, ->
+					$(@).hide()
 				@init()
 
 		@queue.loadManifest manifest
