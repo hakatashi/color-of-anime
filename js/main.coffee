@@ -389,6 +389,7 @@ class Game
 
 		@queue.on 'complete', =>
 			$(document).ready =>
+				$('#loading-background').stop true, true
 				$('#loading').animate {top: '-100%'}, ->
 					$(@).hide()
 				@init()

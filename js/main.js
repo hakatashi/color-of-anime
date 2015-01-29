@@ -441,6 +441,7 @@
       this.queue.on('complete', (function(_this) {
         return function() {
           return $(document).ready(function() {
+            $('#loading-background').stop(true, true);
             $('#loading').animate({
               top: '-100%'
             }, function() {
