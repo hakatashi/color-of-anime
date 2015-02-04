@@ -185,29 +185,18 @@ colorConvert.lab.hsv = function (color) {
     return colorConvert.rgb.hsv(colorConvert.lab.rgb(color));
 };
 
-/**
- *  Sugar Library v1.4.1
- *
- *  Freely distributable and licensed under the MIT-style license.
- *  Copyright (c) 2013 Andrew Plummer
- *  http://sugarjs.com/
- *
- * ---------------------------- */
-String.prototype.startsWith = function (searchString) {
-    var str, start, pos, len, searchLength, position = arguments[1];
-    str = String(this);
-    searchString = String(searchString);
-    pos = Number(position) || 0;
-    len = str.length;
-    start = Math.min(Math.max(pos, 0), len);
-    searchLength = searchString.length;
-    if(searchLength + start > len) {
-        return false;
-    }
-    if(str.substr(start, searchLength) === searchString) {
-        return true;
-    }
-    return false;
+// Polyfill String.prototype.startsWith
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+if (!String.prototype.startsWith) {
+    Object.defineProperty(String.prototype, 'startsWith', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: function(searchString, position) {
+            position = position || 0;
+            return this.lastIndexOf(searchString, position) === position;
+        }
+    });
 }
 
 /*
