@@ -1,4 +1,5 @@
 (function() {
+  // Extend Caman with custom colorchanging plugin
   var Game, Question, availableLanguages, colorScore, colorScoreInt, colorsetToRealValueArray, distanceBetweenColors, game, getX, language, nearestColor, percentageToRealValue, realValueArrayToColorset, realValueToPercentage, setLanguage, tinycolorArray;
 
   Caman.Filter.register('translate', function(fromRGB, toRGB) {
@@ -43,7 +44,7 @@
     if (!base._format) {
       return null;
     }
-    nearestDistance = Infinity;
+    nearestDistance = 2e308;
     nearest = null;
     Object.keys(tinycolor.names).forEach(function(colorname) {
       var distance;
@@ -60,18 +61,22 @@
     };
   };
 
+  // Returns score from 0.0 to 1.0
   colorScore = function(colorA, colorB) {
     var SIGMA, TOLERANCE, distance, score;
-    SIGMA = 30;
-    TOLERANCE = 0.02;
+    // currently uses evaluation by Gaussian function
+    SIGMA = 30; // How much score will be lowered with distance aparted from correct color
+    TOLERANCE = 0.02; // How the score will be tolerated to get full score
     distance = distanceBetweenColors(colorA, colorB);
     return score = Math.min(Math.exp(-(distance / SIGMA) * (distance / SIGMA)) * (1 + TOLERANCE), 1);
   };
 
+  // Returns score from 0 to 100
   colorScoreInt = function(colorA, colorB) {
     return Math.floor(colorScore(colorA, colorB) * 100);
   };
 
+  // get x coordinary from touch or click event
   getX = function(event) {
     if (event.originalEvent.changedTouches) {
       return event.originalEvent.changedTouches[0].pageX;
@@ -150,21 +155,22 @@
     return ret;
   };
 
+  // preserve size of image
   tinycolorArray = function(input) {
     var RGB;
     RGB = tinycolor(input).toRgb();
     return [RGB.r, RGB.g, RGB.b];
   };
 
-  Question = (function() {
-    function Question(game, character) {
-      this.game = game;
-      this.character = character;
-      this.info = this.game.queue.getResult("" + this.character + ".info");
+  Question = class Question {
+    constructor(game1, character1) {
+      this.game = game1;
+      this.character = character1;
+      this.info = this.game.queue.getResult(`${this.character}.info`);
       this.defaultColor = tinycolor(this.info['default']);
       this.originalColor = tinycolor(this.info.color);
-      this.baseImage = this.game.queue.getResult("" + this.character + ".base");
-      this.colorImage = this.game.queue.getResult("" + this.character + ".color");
+      this.baseImage = this.game.queue.getResult(`${this.character}.base`);
+      this.colorImage = this.game.queue.getResult(`${this.character}.color`);
       this.questionIndex = this.game.questionIndex;
       this.colorsets = {
         RGB: ['r', 'g', 'b'],
@@ -211,60 +217,68 @@
       });
       $('#original-color-info .result-color-value').text(this.originalColor.toHexString());
       $('#original-color-info .result-color-name').text(nearestColor(this.originalColor).name);
+      // construct image field
       $('#image-field').prepend([
-        this.imageElement = $('<div>', {
+        this.imageElement = $('<div>',
+        {
           id: 'image'
         }).append([
           $('<canvas>').attr({
             id: 'canvas',
             width: this.baseImage.originalWidth,
             height: this.baseImage.originalHeight
-          }), this.baseImage
+          }),
+          this.baseImage
         ]).invisible()
       ]);
+      // update image information
       $('#image-info').empty().append([
-        $('<span>', {
-          "class": 'text-en',
+        $('<span>',
+        {
+          class: 'text-en',
           lang: 'en',
-          text: "" + this.info.name.en + "(" + this.info.group.en + ")"
-        }), $('<span>', {
-          "class": 'text-ja',
+          text: `${this.info.name.en}(${this.info.group.en})`
+        }),
+        $('<span>',
+        {
+          class: 'text-ja',
           lang: 'ja',
-          text: "" + this.info.name.ja + "(" + this.info.group.ja + ")"
-        }), document.createTextNode(' - '), $('<a>', {
+          text: `${this.info.name.ja}(${this.info.group.ja})`
+        }),
+        document.createTextNode(' - '),
+        $('<a>',
+        {
           href: this.info.source,
           target: '_blank',
           text: 'Color Source'
         })
       ]);
-      this.caman = Caman('#canvas', 'img/' + this.character + '/color.png', (function(_this) {
-        return function() {
-          _this.busy = false;
-          return _this.updateImage();
-        };
-      })(this));
+      this.caman = Caman('#canvas', 'img/' + this.character + '/color.png', () => {
+        this.busy = false;
+        return this.updateImage();
+      });
       $('#color-sliders').fadeIn();
     }
 
-    Question.prototype.updateSliders = function(base) {
+    // Update current slider color parameters based on specific colorset parameters
+    updateSliders(base) {
       var baseColor;
       baseColor = colorsetToRealValueArray(base, this.currentSliderColor[base]);
-      Object.keys(this.colorsets).forEach((function(_this) {
-        return function(colorset) {
-          var color;
-          if (colorset !== base) {
-            color = colorConvert[base.toLowerCase()][colorset.toLowerCase()](baseColor);
-            _this.currentSliderColor[colorset] = realValueArrayToColorset(colorset, color);
-          }
-          return _this.colorsets[colorset].forEach(function(parameter) {
-            return _this.game.moveSlider(colorset, parameter, _this.currentSliderColor[colorset][parameter]);
-          });
-        };
-      })(this));
+      Object.keys(this.colorsets).forEach((colorset) => {
+        var color;
+        if (colorset !== base) {
+          color = colorConvert[base.toLowerCase()][colorset.toLowerCase()](baseColor);
+          this.currentSliderColor[colorset] = realValueArrayToColorset(colorset, color);
+        }
+        return this.colorsets[colorset].forEach((parameter) => {
+          return this.game.moveSlider(colorset, parameter, this.currentSliderColor[colorset][parameter]);
+        });
+      });
       return this.updateInfo();
-    };
+    }
 
-    Question.prototype.updateInfo = function() {
+    // update displayed color information based on current color parameter
+    updateInfo() {
       var color;
       color = tinycolor.fromRatio(this.currentSliderColor.RGB);
       $('.color-preview-value').text(color.toHexString());
@@ -272,40 +286,40 @@
       if (this.phase === 'slider') {
         this.yourColor = $.extend({}, this.currentSliderColor.RGB);
       }
-      return Object.keys(this.colorsets).forEach((function(_this) {
-        return function(colorset) {
-          var sliderColor;
-          sliderColor = _this.currentSliderColor[colorset];
-          return _this.colorsets[colorset].forEach(function(parameter) {
-            var $parameter, $slider, colorArray, colorStop, colorStops, i;
-            $parameter = $('.color-parameter-wrap[data-colorset=' + colorset + '][data-parameter=' + parameter + ']');
-            $slider = $parameter.find('.color-slider-wrapper');
-            colorStop = null;
-            colorStops = [];
-            i = 0;
-            while (i < 7) {
-              color = $.extend({}, sliderColor);
-              color[parameter] = 1 / 6 * i;
-              colorArray = colorsetToRealValueArray(colorset, color);
-              if (colorset === 'RGB') {
-                colorStop = colorArray;
-              } else {
-                colorStop = colorConvert[colorset.toLowerCase()].rgb(colorArray);
-              }
-              colorStops.push({
-                r: colorStop[0],
-                g: colorStop[1],
-                b: colorStop[2]
-              });
-              i++;
+      // update sliders gradients
+      return Object.keys(this.colorsets).forEach((colorset) => {
+        var sliderColor;
+        sliderColor = this.currentSliderColor[colorset];
+        return this.colorsets[colorset].forEach((parameter) => {
+          var $parameter, $slider, colorArray, colorStop, colorStops, i;
+          $parameter = $('.color-parameter-wrap[data-colorset=' + colorset + '][data-parameter=' + parameter + ']');
+          $slider = $parameter.find('.color-slider-wrapper');
+          colorStop = null;
+          colorStops = [];
+          i = 0;
+          while (i < 7) {
+            color = $.extend({}, sliderColor);
+            color[parameter] = 1 / 6 * i;
+            colorArray = colorsetToRealValueArray(colorset, color);
+            if (colorset === 'RGB') {
+              colorStop = colorArray;
+            } else {
+              colorStop = colorConvert[colorset.toLowerCase()].rgb(colorArray);
             }
-            return $slider.gradient(colorStops);
-          });
-        };
-      })(this));
-    };
+            colorStops.push({
+              r: colorStop[0],
+              g: colorStop[1],
+              b: colorStop[2]
+            });
+            i++;
+          }
+          return $slider.gradient(colorStops);
+        });
+      });
+    }
 
-    Question.prototype.updateImage = function() {
+    // update image based on current slider color
+    updateImage() {
       if (this.busy) {
         return;
       }
@@ -317,19 +331,18 @@
       $('#rendering').visible();
       this.caman.revert(false);
       this.caman.translate(this.info.color, colorsetToRealValueArray('RGB', this.currentSliderColor.RGB));
-      return this.caman.render((function(_this) {
-        return function() {
-          if (_this.imageElement.css('visibility') === 'hidden') {
-            _this.imageElement.visible().hide().fadeIn();
-          }
-          $('#rendering').invisible();
-          _this.busy = false;
-          return _this.updateImage();
-        };
-      })(this));
-    };
+      return this.caman.render(() => {
+        if (this.imageElement.css('visibility') === 'hidden') {
+          this.imageElement.visible().hide().fadeIn();
+        }
+        $('#rendering').invisible();
+        this.busy = false;
+        return this.updateImage();
+      });
+    }
 
-    Question.prototype.submitResult = function() {
+    // submit result and confirm OK
+    submitResult() {
       var color;
       color = tinycolor.fromRatio(this.currentSliderColor.RGB);
       $('#your-color-preview').css({
@@ -338,31 +351,30 @@
       $('#your-color-info .result-color-value').text(color.toHexString());
       $('#your-color-info .result-color-name').text(nearestColor(color).name);
       this.score = colorScoreInt(color, this.originalColor);
-      $('#color-sliders').fadeOut((function(_this) {
-        return function() {
-          $({
-            score: 0
-          }).animate({
-            score: _this.score
-          }, {
-            step: function(currentScore) {
-              var scoreInt;
-              scoreInt = Math.floor(currentScore);
-              $('#score-numeral').text(scoreInt);
-              return $('#score-bar-inner').css({
-                width: scoreInt + '%'
-              });
-            },
-            duration: _this.score * 30,
-            easing: 'linear'
-          });
-          return $('#result-field').fadeIn();
-        };
-      })(this));
+      $('#color-sliders').fadeOut(() => {
+        $({
+          score: 0
+        }).animate({
+          score: this.score
+        }, {
+          step: (currentScore) => {
+            var scoreInt;
+            scoreInt = Math.floor(currentScore);
+            $('#score-numeral').text(scoreInt);
+            return $('#score-bar-inner').css({
+              width: scoreInt + '%'
+            });
+          },
+          duration: this.score * 30,
+          easing: 'linear'
+        });
+        return $('#result-field').fadeIn();
+      });
       return this.phase = 'result';
-    };
+    }
 
-    Question.prototype.setColor = function(input) {
+    // set color by tinycolor input
+    setColor(input) {
       var color, rgb;
       color = tinycolor(input);
       if (color._format) {
@@ -377,9 +389,10 @@
       } else {
         return this.updateInfo();
       }
-    };
+    }
 
-    Question.prototype.previewResult = function(isYourColor) {
+    // preview colors in image on result page
+    previewResult(isYourColor) {
       var rgb;
       if (isYourColor) {
         this.currentSliderColor.RGB = $.extend({}, this.yourColor);
@@ -393,24 +406,21 @@
       }
       this.updateSliders('RGB');
       return this.updateImage();
-    };
+    }
 
-    Question.prototype.quit = function(callback) {
+    // quit problem
+    quit(callback) {
       $('#result-field').fadeOut(callback);
-      return this.imageElement.fadeOut((function(_this) {
-        return function() {
-          return _this.imageElement.remove();
-        };
-      })(this));
-    };
+      return this.imageElement.fadeOut(() => {
+        return this.imageElement.remove();
+      });
+    }
 
-    return Question;
+  };
 
-  })();
-
-  Game = (function() {
-    function Game() {
-      var i, manifest, selectableCharacters, _i, _ref;
+  Game = class Game {
+    constructor() {
+      var i, j, manifest, ref, selectableCharacters;
       this.availableCharacters = ['akapuyo', 'harusaki-chiwa', 'ibaraki-kasen', 'neptune', 'takanashi-rikka', 'kirima-syaro', 'kafuu-chino', 'hana-fonteinsutando', 'kasumigaoka-utaha', 'akaza-akari'];
       this.questionIndex = 0;
       if (typeof localStorage.seenCharacters === 'string') {
@@ -418,18 +428,17 @@
       } else {
         this.seenCharacters = [];
       }
+      // Select characters for this session
       this.characters = [];
       selectableCharacters = [];
-      this.availableCharacters.forEach((function(_this) {
-        return function(character) {
-          if (_this.seenCharacters.indexOf(character === -1)) {
-            return selectableCharacters.push(character);
-          }
-        };
-      })(this));
+      this.availableCharacters.forEach((character) => {
+        if (this.seenCharacters.indexOf(character === -1)) {
+          return selectableCharacters.push(character);
+        }
+      });
       shuffle(selectableCharacters);
       shuffle(this.seenCharacters);
-      for (i = _i = 0, _ref = Math.min(selectableCharacters.length, 5) - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      for (i = j = 0, ref = Math.min(selectableCharacters.length, 5) - 1; (0 <= ref ? j <= ref : j >= ref); i = 0 <= ref ? ++j : --j) {
         this.characters.push(selectableCharacters[i]);
       }
       i = 0;
@@ -437,6 +446,7 @@
         this.characters.push(this.seenCharacters[i]);
         i++;
       }
+      // PreLoad Images
       this.queue = new createjs.LoadQueue();
       manifest = [];
       this.characters.forEach(function(character) {
@@ -462,101 +472,90 @@
           height: event.progress * 100 + '%'
         }, 500, 'easeOutExpo');
       });
-      this.queue.on('complete', (function(_this) {
-        return function() {
-          return $(document).ready(function() {
-            $('#loading-background').stop(true, true);
-            $('#loading').animate({
-              top: '-100%'
-            }, function() {
-              return $(this).hide();
-            });
-            return _this.init();
+      this.queue.on('complete', () => {
+        return $(document).ready(() => {
+          $('#loading-background').stop(true, true);
+          $('#loading').animate({
+            top: '-100%'
+          }, function() {
+            return $(this).hide();
           });
-        };
-      })(this));
+          return this.init();
+        });
+      });
       this.queue.loadManifest(manifest);
     }
 
-    Game.prototype.init = function() {
+    init() {
       this.currentQuestion = new Question(this, this.characters[0]);
+      // fire onResize event
       $(window).resize(this.onResize.bind(this));
       this.onResize();
-      $('.color-parameter').on('touchstart mousedown', (function(_this) {
-        return function(event) {
-          var colorset, movePinch, offset, parameter, touchX, width;
-          event.preventDefault();
+      // DOM binders
+      $('.color-parameter').on('touchstart mousedown', (event) => {
+        var colorset, movePinch, offset, parameter, touchX, width;
+        event.preventDefault();
+        touchX = getX(event);
+        parameter = $(event.currentTarget).data('parameter');
+        offset = $(event.currentTarget).offset().left;
+        width = $(event.currentTarget).width();
+        colorset = $(event.currentTarget).data('colorset');
+        movePinch = (event) => {
+          var value;
           touchX = getX(event);
-          parameter = $(event.currentTarget).data('parameter');
-          offset = $(event.currentTarget).offset().left;
-          width = $(event.currentTarget).width();
-          colorset = $(event.currentTarget).data('colorset');
-          movePinch = function(event) {
-            var value;
-            touchX = getX(event);
-            value = (touchX - offset) / width;
-            value = Math.max(0, Math.min(value, 1));
-            _this.currentQuestion.currentSliderColor[colorset][parameter] = value;
-            _this.currentQuestion.updateSliders(colorset);
-            return _this.currentQuestion.updateImage();
-          };
-          $(window).on('touchmove mousemove', movePinch);
-          $(window).on('touchend mouseup', function(event) {
-            return $(event.currentTarget).off('touchmove mousemove', movePinch);
-          });
-          return movePinch(event);
+          value = (touchX - offset) / width;
+          value = Math.max(0, Math.min(value, 1));
+          this.currentQuestion.currentSliderColor[colorset][parameter] = value;
+          this.currentQuestion.updateSliders(colorset);
+          return this.currentQuestion.updateImage();
         };
-      })(this));
-      $('.color-preview-value').on('click', (function(_this) {
-        return function(event) {
-          $(event.currentTarget).attr('contenteditable', true);
-          $(event.currentTarget).selectText();
-          $(event.currentTarget).on('keypress', function(event) {
-            if (event.which === 13) {
-              $(event.currentTarget).blur();
-              return false;
-            } else {
-              return true;
-            }
-          });
-          return $(event.currentTarget).on('blur', function(event) {
-            $(event.currentTarget).attr('contenteditable', false);
-            $(event.currentTarget).off('keypress blur');
-            return _this.currentQuestion.setColor($(event.currentTarget).text());
-          });
-        };
-      })(this));
-      $('.tab-inner').on('click', (function(_this) {
-        return function(event) {
-          if (_this.currentQuestion.phase === 'slider') {
-            return _this.selectTab($(event.currentTarget).text());
+        $(window).on('touchmove mousemove', movePinch);
+        $(window).on('touchend mouseup', function(event) {
+          return $(event.currentTarget).off('touchmove mousemove', movePinch);
+        });
+        return movePinch(event);
+      });
+      $('.color-preview-value').on('click', (event) => {
+        $(event.currentTarget).attr('contenteditable', true);
+        $(event.currentTarget).selectText();
+        // blur if enter is pressed
+        $(event.currentTarget).on('keypress', (event) => {
+          if (event.which === 13) {
+            $(event.currentTarget).blur();
+            return false;
+          } else {
+            return true;
           }
-        };
-      })(this));
-      $('.submit').on('click', (function(_this) {
-        return function() {
-          return _this.currentQuestion.submitResult();
-        };
-      })(this));
-      $('#your-color-preview').on('click', (function(_this) {
-        return function() {
-          return _this.currentQuestion.previewResult(true);
-        };
-      })(this));
-      $('#original-color-preview').on('click', (function(_this) {
-        return function() {
-          return _this.currentQuestion.previewResult(false);
-        };
-      })(this));
-      return $('.go-next').on('click', (function(_this) {
-        return function() {
-          return _this.goNext();
-        };
-      })(this));
-    };
+        });
+        return $(event.currentTarget).on('blur', (event) => {
+          $(event.currentTarget).attr('contenteditable', false);
+          $(event.currentTarget).off('keypress blur');
+          return this.currentQuestion.setColor($(event.currentTarget).text());
+        });
+      });
+      $('.tab-inner').on('click', (event) => {
+        if (this.currentQuestion.phase === 'slider') {
+          return this.selectTab($(event.currentTarget).text());
+        }
+      });
+      $('.submit').on('click', () => {
+        return this.currentQuestion.submitResult();
+      });
+      $('#your-color-preview').on('click', () => {
+        return this.currentQuestion.previewResult(true);
+      });
+      $('#original-color-preview').on('click', () => {
+        return this.currentQuestion.previewResult(false);
+      });
+      return $('.go-next').on('click', () => {
+        return this.goNext();
+      });
+    }
 
-    Game.prototype.onResize = function(event) {
+    onResize(event) {
       var IMAGEINFO_HEIGHT, RENDERING_HEIGHT, boxHeight, boxWidth, character, fieldHeight, fieldWidth, imageHeight, imageTop, imageWidth, zoom;
+      // fit #image-field to be contained in #image-panel
+      // 'box' means max acceptable size of #image-panel in #image-field.
       RENDERING_HEIGHT = 40;
       IMAGEINFO_HEIGHT = 30;
       character = this.characters[this.questionIndex];
@@ -612,42 +611,40 @@
           top: 0
         });
       }
-    };
+    }
 
-    Game.prototype.moveSlider = function(colorset, parameter, value) {
+    // move sliders of DOM from parameter value
+    moveSlider(colorset, parameter, value) {
       var $parameter, $pinch, $value;
       $parameter = $('.color-parameter-wrap[data-colorset=' + colorset + '][data-parameter=' + parameter + ']');
       $pinch = $parameter.find('.color-slider-pinch');
       $value = $parameter.find('.color-value');
       $pinch.css('left', value * 100 + '%');
       return $value.text(Math.floor(percentageToRealValue(colorset, parameter, value)));
-    };
+    }
 
-    Game.prototype.goNext = function() {
-      return this.currentQuestion.quit((function(_this) {
-        return function() {
-          _this.seenCharacters.push(_this.characters[_this.questionIndex]);
-          if (_this.seenCharacters.length === _this.availableCharacters.length) {
-            _this.seenCharacters = [];
-          }
-          localStorage.seenCharacters = JSON.stringify(_this.seenCharacters);
-          _this.questionIndex++;
-          return _this.currentQuestion = new Question(_this, _this.characters[_this.questionIndex]);
-        };
-      })(this));
-    };
+    goNext() {
+      return this.currentQuestion.quit(() => {
+        this.seenCharacters.push(this.characters[this.questionIndex]);
+        if (this.seenCharacters.length === this.availableCharacters.length) {
+          this.seenCharacters = [];
+        }
+        localStorage.seenCharacters = JSON.stringify(this.seenCharacters);
+        this.questionIndex++;
+        return this.currentQuestion = new Question(this, this.characters[this.questionIndex]);
+      });
+    }
 
-    Game.prototype.selectTab = function(tab) {
+    selectTab(tab) {
       $('.colorset-sliders').hide();
       $('.tab').removeClass('selected');
-      $(".colorset-sliders[data-colorset=" + tab + "]").show();
-      return $(".tab[data-colorset=" + tab + "]").addClass('selected');
-    };
+      $(`.colorset-sliders[data-colorset=${tab}]`).show();
+      return $(`.tab[data-colorset=${tab}]`).addClass('selected');
+    }
 
-    return Game;
+  };
 
-  })();
-
+  // set language
   availableLanguages = ['en', 'ja'];
 
   $('html').classes().forEach(function(classname) {
@@ -674,6 +671,7 @@
 
   $('html').attr('lang', setLanguage);
 
+  // kick start
   game = new Game();
 
 }).call(this);

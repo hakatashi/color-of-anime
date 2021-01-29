@@ -258,7 +258,7 @@ html.lang-en .text-en {
   cursor: auto;
 }
 #panel {
-  background-color: #4d4d4d;
+  background-color: #4D4D4D;
   border-radius: 15px;
   color: white;
   zoom: 1;
@@ -470,9 +470,9 @@ html.lang-en .text-en {
   width: 0%;
   height: 100%;
   background-color: #25CC39;
-  -webkit-box-shadow: 0 0 5px 0 #54f55c;
-  -moz-box-shadow: 0 0 5px 0 #54f55c;
-  box-shadow: 0 0 5px 0 #54f55c;
+  -webkit-box-shadow: 0 0 5px 0 #54F55C;
+  -moz-box-shadow: 0 0 5px 0 #54F55C;
+  box-shadow: 0 0 5px 0 #54F55C;
 }
 #result-color {
   margin: 10px 20px 0;
